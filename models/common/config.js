@@ -1,6 +1,6 @@
 module.exports = {
     getConfig: function() {
-        if(process.env.APPLICATION_ENV == null) {
+        if(process.env.APPLICATION_ENV === null) {
             throw "APPLICATION_ENV not defined";
         }
 
