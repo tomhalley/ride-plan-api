@@ -1,2 +1,16 @@
 #!/usr/bin/env node
-var argv = require('optimist').argv;
+var config = require("../../app/common/config").getConfig();
+
+var argv = require('optimist').argv,
+    fixtures = require('pow-mongodb-fixtures').connect(config.db.database);
+
+var fixtureDir = argv._[0] || 'default';
+
+fixtures.load("../../test/fixtures/" + fixtureDir, function(err) {
+    if(err) {
+        console.log(err);
+    } else {
+        console.log("Fixtures loaded from '../test/fixtures/'" + fixtureDir);
+    }
+});
+

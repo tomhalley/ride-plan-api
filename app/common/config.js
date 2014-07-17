@@ -1,13 +1,15 @@
 module.exports = {
     getConfig: function() {
-        if(process.env.APPLICATION_ENV === null) {
+        var env = process.env.APPLICATION_ENV;
+
+        if(env === null) {
             throw "APPLICATION_ENV not defined";
         }
 
         try {
-            var config = require("../../configs/" + process.env.APPLICATION_ENV + ".js");
+            var config = require("../../config/" + env + ".js");
         } catch(exc) {
-            throw "Could not find config for 'process.env.APPLICATION_ENV'";
+            throw "Could not find config for '" + env + "'";
         }
 
         return config;
