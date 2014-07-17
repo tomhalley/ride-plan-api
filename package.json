@@ -17,6 +17,7 @@
     "morgan": "~1.0.0",
     "static-favicon": "~1.0.0",
     "optimist": "~0.6.1",
-    "pow-mongodb-fixtures": "~0.10.0"
+    "pow-mongodb-fixtures": "~0.10.0",
+    "mongoose-redis-cache": "0.0.3"
   }
 }

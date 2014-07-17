@@ -1,9 +1,9 @@
 module.exports = {
     getConfig: function() {
-        var env = process.env.APPLICATION_ENV;
+        var env = process.env.NODE_ENV;
 
         if(env === null) {
-            throw "APPLICATION_ENV not defined";
+            throw "NODE_ENV not defined";
         }
 
         try {

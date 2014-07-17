@@ -1,4 +1,4 @@
-var userRepository = require("../models/repositories/userRepository");
+var user_repository = require("../models/repositories/user_repository");
 
 var responseHandler = function(err, record, res) {
     if(record === null) {
@@ -12,12 +12,12 @@ var responseHandler = function(err, record, res) {
 
 module.exports = {
     findByIdAction: function(req, res) {
-        userRepository.findUserById(req.params.id, function(err, user) {
+        user_repository.findUserById(req.params.id, function(err, user) {
             responseHandler(err, user, res);
         });
     },
     findByEmailAction: function(req, res) {
-        userRepository.findUserByEmail(req.params.email, function(err, user) {
+        user_repository.findUserByEmail(req.params.email, function(err, user) {
             responseHandler(err, user, res);
         });
     }

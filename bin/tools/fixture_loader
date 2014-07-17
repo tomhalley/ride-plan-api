@@ -1,16 +1,20 @@
 #!/usr/bin/env node
-var config = require("../../app/common/config").getConfig();
-
 var argv = require('optimist').argv,
+    config = require("../../app/common/config").getConfig(),
     fixtures = require('pow-mongodb-fixtures').connect(config.db.database);
 
+// Clear fixtures
+if(argv.purge) {
+    fixtures.clear(function() {
+        console.log("data cleared from " + config.db.database)
+        process.exit();
+    })
+}
+
+// Load fixtures
 var fixtureDir = argv._[0] || 'default';
 
 fixtures.load("../../test/fixtures/" + fixtureDir, function(err) {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log("Fixtures loaded from '../test/fixtures/'" + fixtureDir);
-    }
+    console.log(err || "'" + fixtureDir + "' fixtures loaded into " + config.db.database);
+    process.exit();
 });
-
