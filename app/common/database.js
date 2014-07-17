@@ -4,6 +4,9 @@ var mongoose = require('mongoose'),
 
 // Redis setup
 mongooseRedisCache(mongoose, config.redis);
+mongoose.redisClient.on("error", function() {
+    console.error("Could not connect to redis at " + config.redis.host + ":" + config.redis.port);
+});
 
 // Database methods
 module.exports = {
