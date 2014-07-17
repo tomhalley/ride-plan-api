@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-    configLoader = require("../common/config");
+    configLoader = require("./config");
 
 module.exports = {
     connect: function(callBack) {

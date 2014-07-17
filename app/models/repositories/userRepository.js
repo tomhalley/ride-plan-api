@@ -1,5 +1,5 @@
-var database = require("../common/database"),
-    User = require("../models/user");
+var database = require("../../common/database"),
+    User = require("../entities/user");
 
 module.exports = {
     findUserById: function(id, callback) {
