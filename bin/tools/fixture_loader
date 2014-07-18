@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 var argv = require('optimist').argv,
-    configLoader = require("../../app/common/config"),
-    fixtures = require('pow-mongodb-fixtures').connect(configLoader.getConnectionString());
+    configLoader = require("../../app/common/ConfigProvider"),
+    fixtureService = require("../../app/models/services/FixtureService");
 
 // Clear fixtures
 if(argv.purge) {
     var config = configLoader.getConfig();
-    fixtures.clear(function(err) {
+    fixtureService.purgeDatabase(function(err) {
         console.log(err || "data cleared from " + config.db.database);
         process.exit();
     })
@@ -15,7 +15,7 @@ if(argv.purge) {
 // Load fixtures
 var fixtureDir = argv._[0] || 'default';
 
-fixtures.clearAndLoad("../../test/fixtures/" + fixtureDir, function(err) {
+fixtureService.loadFixtures("../../test/fixtures/" + fixtureDir, function(err) {
     console.log(err || fixtureDir + " fixtures loaded into " + process.env.NODE_ENV + " database");
     process.exit();
 });

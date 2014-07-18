@@ -1,19 +1,19 @@
-var database = require("../../common/database"),
-    User = require("../entities/user");
+var Database = require("../../common/Database"),
+    User = require("../entities/User");
 
 module.exports = {
     findUserById: function(id, callback) {
-        database.connect(function() {
+        Database.connect(function() {
             User.findOne({'id': id}, function(err, user) {
-                database.close();
+                Database.close();
                 callback(err, user);
             });
         });
     },
     findUserByEmail: function(email, callback) {
-        database.connect(function() {
+        Database.connect(function() {
             User.findOne({'email': email}, function(err, user) {
-                database.close();
+                Database.close();
                 callback(err, user);
             });
         });

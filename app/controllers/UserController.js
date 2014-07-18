@@ -1,4 +1,5 @@
-var user_repository = require("../models/repositories/user_repository");
+var UserRepository = require("../models/repositories/UserRepository"),
+    Database = require("../common/Database");
 
 var responseHandler = function(err, record, res) {
     if(record === null) {
@@ -8,16 +9,17 @@ var responseHandler = function(err, record, res) {
     } else {
         res.json(200, record);
     }
+    Database.close();
 };
 
 module.exports = {
     findByIdAction: function(req, res) {
-        user_repository.findUserById(req.params.id, function(err, user) {
+        UserRepository.findUserById(req.params.id, function(err, user) {
             responseHandler(err, user, res);
         });
     },
     findByEmailAction: function(req, res) {
-        user_repository.findUserByEmail(req.params.email, function(err, user) {
+        UserRepository.findUserByEmail(req.params.email, function(err, user) {
             responseHandler(err, user, res);
         });
     }

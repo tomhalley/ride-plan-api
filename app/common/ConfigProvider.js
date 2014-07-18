@@ -1,18 +1,14 @@
 module.exports = {
     getConfig: function() {
-        var env = process.env.NODE_ENV;
-
-        if(env === null) {
-            throw "NODE_ENV not defined";
+        if(process.env.NODE_ENV === null) {
+            throw new Error("NODE_ENV not defined");
         }
 
         try {
-            var config = require("../../config/" + env + ".js");
+            return require("../../config/" + process.env.NODE_ENV + ".js");
         } catch(exc) {
-            throw "Could not find config for '" + env + "'";
+            throw new Error("Could not find config for '" + process.env.NODE_ENV + "'");
         }
-
-        return config;
     },
     getConnectionString: function() {
         var config = this.getConfig();

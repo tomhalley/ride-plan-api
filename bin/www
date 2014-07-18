@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var debug = require('debug')('MotoNet-Api'),
     app = require('../app/app'),
-    config = require('../app/common/config').getConfig();
+    config = require('../app/common/ConfigProvider').getConfig();
 
 app.set('port', config.server.port);
 

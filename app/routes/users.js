@@ -1,9 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var userController = require("../controllers/userController");
+var router = require('express').Router();
+var UserController = require("../controllers/UserController");
 
 /* GET users listing. */
-router.get('/id/:id', userController.findByIdAction);
-router.get('/email/:email', userController.findByEmailAction);
+router.get('/id/:id', UserController.findByIdAction);
+router.get('/email/:email', UserController.findByEmailAction);
 
 module.exports = router;
