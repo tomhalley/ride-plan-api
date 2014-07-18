@@ -13,5 +13,9 @@ module.exports = {
         }
 
         return config;
+    },
+    getConnectionString: function() {
+        var config = this.getConfig();
+        return 'mongodb://' + config.db.host + ":" + config.db.port + "/" + config.db.database;
     }
 };
