@@ -12,13 +12,28 @@ module.exports = {
             callback();
         });
     },
-    testFindUserById: function(test) {
+    testFindUserById_ReturnsUser: function(test) {
         UserRepository.findUserById(1, function(err, user) {
             test.equal(user.name, "Tom Halley");
             test.done();
         });
     },
-    testFindUserByEmail: function(test) {
-        test.done();
+    testFindUserById_ReturnsNullIfNoUser: function(test) {
+        UserRepository.findUserById(0, function(err, user) {
+            test.equal(user, null);
+            test.done();
+        });
+    },
+    testFindUserByEmail_ReturnsUser: function(test) {
+        UserRepository.findUserByEmail("tomhalley89@gmail.com", function(err, user) {
+            test.equal(user.name, "Tom Halley");
+            test.done();
+        });
+    },
+    testFindUserByEmail_ReturnsNullOfNoUser: function(test) {
+        UserRepository.findUserByEmail(null, function(err, user) {
+            test.equal(user, null);
+            test.done();
+        });
     }
 };

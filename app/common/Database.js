@@ -1,16 +1,9 @@
 var mongoose = require('mongoose'),
-    mongooseRedisCache = require("mongoose-redis-cache"),
-    ConfigProvider = require("./ConfigProvider"),
-    config = ConfigProvider.getConfig();
+    ConfigProvider = require("./ConfigProvider");
 
 // Database methods
 module.exports = {
     connect: function(callBack) {
-        mongooseRedisCache(mongoose, config.redis);
-        mongoose.redisClient.on("error", function() {
-            console.error("Could not connect to redis at " + config.redis.host + ":" + config.redis.port);
-        });
-
         var dbClient = mongoose.connect(ConfigProvider.getConnectionString());
 
         var db = mongoose.connection;
@@ -21,6 +14,5 @@ module.exports = {
     },
     close: function() {
         mongoose.connection.close();
-        mongoose.redisClient.close();
     }
 };
