@@ -9,7 +9,8 @@ var EventSchema = new mongoose.Schema({
     start_date_time: Date,
     end_date_time: Date,
     created_by: Number,
-    waypoints: Array
+    waypoints: Array,
+    comments: Array
 });
 
 module.exports = mongoose.model('Event', EventSchema);
