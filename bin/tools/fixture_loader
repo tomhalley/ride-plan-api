@@ -8,7 +8,6 @@ if(argv.purge) {
     var config = configLoader.getConfig();
     fixtureService.purgeDatabase(function(err) {
         console.log(err || "data cleared from " + config.db.database);
-        process.exit();
     })
 }
 
@@ -17,5 +16,4 @@ var fixtureDir = argv._[0] || 'default';
 
 fixtureService.loadFixtures("../../test/fixtures/" + fixtureDir, function(err) {
     console.log(err || fixtureDir + " fixtures loaded into " + process.env.NODE_ENV + " database");
-    process.exit();
 });
