@@ -7,12 +7,12 @@ module.exports = {
         var page = req.params.page != undefined ? req.params.page : 1;
 
         EventRepository.getEvents(count, page, function(err, events) {
-            ResponseService.responseHandler(err, events, res);
+            ResponseService.respondWithObject(err, events, res);
         })
     },
     eventAction: function(req, res) {
         EventRepository.getEventById(req.params.id, function(err, user) {
-            ResponseService.responseHandler(err, user, res);
+            ResponseService.respondWithObject(err, user, res);
         })
     }
 };

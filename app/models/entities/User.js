@@ -1,9 +1,9 @@
 var mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
-    _id: {select: false},
+    _id: {type: Number, select: false},
     __v: {type: Number, select: false},
-    id: Number,
+    facebook_id: {type: Number, unique: true},
     name: {type:  String, unique: true},
     email: String
 });
