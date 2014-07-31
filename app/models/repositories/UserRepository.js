@@ -1,14 +1,11 @@
 var Database = require("../../common/Database"),
-    User = require("../entities/User");
+    User = require("../entities/User"),
+    ObjectId = require("mongodb").ObjectID;
 
 module.exports = {
-    findUserById: function(id, callback) {
-        Database.connect(function() {
-            User.findOne({'id': id}, function(err, user) {
-                Database.close();
-                callback(err, user);
-            });
-        });
+
+    findUserByUsername: function(username, callback) {
+        Database.connect
     },
     findUserByEmail: function(email, callback) {
         Database.connect(function() {

@@ -12,18 +12,6 @@ module.exports = {
             callback();
         });
     },
-    testFindUserById_ReturnsUser: function(test) {
-        UserRepository.findUserById(1, function(err, user) {
-            test.equal(user.name, "Tom Halley");
-            test.done();
-        });
-    },
-    testFindUserById_ReturnsNullIfNoUser: function(test) {
-        UserRepository.findUserById(0, function(err, user) {
-            test.equal(user, null);
-            test.done();
-        });
-    },
     testFindUserByEmail_ReturnsUser: function(test) {
         UserRepository.findUserByEmail("tomhalley89@gmail.com", function(err, user) {
             test.equal(user.name, "Tom Halley");

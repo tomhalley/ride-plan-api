@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var PlaceSchema = new mongoose.Schema({
-    _id: {type: String, select: false},
+    _id: {select: false},
     __v: {type: Number, select: false},
     place_id: Number,
     name: String,
