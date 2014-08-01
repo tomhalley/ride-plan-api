@@ -3,9 +3,11 @@ module.exports = {
         port: process.env.PORT || 80
     },
     db: {
-        database: "motonet_staging",
-        host: "lennon.mongohq.com/app28020598",
+        database: "app28020598",
+        host: "lennon.mongohq.com",
         port: 10074,
+        username: "heroku",
+        password: "CXGd0sWqo0ByXv-NdFl_MK3xzpaXfsnWjhZVbKhlxVTc4WL05mE2PPP4NQ5YAR5ddD5ls2uQY2eQ14ABsAeCAQ",
         options: {
             replset: {
                 socketOptions: {

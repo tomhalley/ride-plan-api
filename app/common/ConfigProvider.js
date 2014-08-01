@@ -12,6 +12,13 @@ module.exports = {
     },
     getConnectionString: function() {
         var config = this.getConfig();
-        return 'mongodb://' + config.db.host + ":" + config.db.port + "/" + config.db.database;
+
+        var string = 'mongodb://';
+        if(config.db.username != undefined && config.db.password != undefined) {
+            string += config.db.username + ":" + config.db.password + "@";
+        }
+        string += config.db.host + ":" + config.db.port + "/" + config.db.database;
+
+        return string;
     }
 };
