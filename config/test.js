@@ -5,7 +5,14 @@ module.exports = {
     db: {
         database: "motonet_test",
         host: "192.168.110.50",
-        port: 27017
+        port: 27017,
+        options: {
+            replset: {
+                socketOptions: {
+                    connectTimeoutMS : 2000
+                }
+            }
+        }
     },
     redis: {
         host: "192.168.110.50",

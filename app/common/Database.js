@@ -1,15 +1,18 @@
 var mongoose = require('mongoose'),
-    ConfigProvider = require("./ConfigProvider");
+    ConfigProvider = require("./ConfigProvider"),
+    Config = ConfigProvider.getConfig();
 
 // Database methods
 module.exports = {
     connect: function(callBack) {
-        var dbClient = mongoose.connect(ConfigProvider.getConnectionString());
+        var dbClient = mongoose.connect(ConfigProvider.getConnectionString(), Config.db.options);
 
         var db = mongoose.connection;
-        db.on('error', console.error.bind(console, 'connection error:'));
-        db.once('open', function callback () {
-            callBack(dbClient);
+        db.on('error', function(err) {
+            callBack(err, null)
+        });
+        db.once('open', function() {
+            callBack(null, dbClient);
         });
     },
     close: function() {

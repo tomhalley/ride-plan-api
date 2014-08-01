@@ -5,7 +5,14 @@ module.exports = {
     db: {
         database: "motonet_staging",
         host: "lennon.mongohq.com/app28020598",
-        port: 10074
+        port: 10074,
+        options: {
+            replset: {
+                socketOptions: {
+                    connectTimeoutMS : 8000
+                }
+            }
+        }
     },
     redis: {
         host: "redis://redistogo:aa637d5a3c5fc2ac729861931763f91d@jack.redistogo.com",
