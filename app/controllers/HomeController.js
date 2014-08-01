@@ -23,7 +23,8 @@ module.exports = {
     indexAction: function(req, res) {
         var scopeObject = {
             title: 'Express',
-            database: ''
+            database: '',
+            redis: ''
         };
 
         checkDatabaseConnection(function(err) {
