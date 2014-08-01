@@ -1,6 +1,6 @@
 module.exports = {
     server: {
-        port: 80
+        port: process.env.PORT || 80
     },
     db: {
         database: "motonet_staging",
