@@ -21,5 +21,9 @@ module.exports = {
         port: 10741,
         pass: null,
         options: null
+    },
+    facebook: {
+        app_id: 1478417649072538,
+        app_secret: "0a807ddce0315a63f773342004042eeb"
     }
 };

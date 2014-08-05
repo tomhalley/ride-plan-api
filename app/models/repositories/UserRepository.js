@@ -8,16 +8,6 @@ var validateUserData = function(userData) {
 
 module.exports = {
     createUser: function(userData, callback) {
-        if(!validateUserData(userData)) {
-            callback("Invalid user data", null);
-        }
-
-        Database.connect(function() {
-            var user = new User({
-
-            });
-        })
-
 
     },
     findUserByFacebookId: function(facebookId, callback) {

@@ -3,6 +3,6 @@ var UserController = require("../controllers/UserController");
 
 /* GET users listing. */
 router.get('/email/:email', UserController.findByEmailAction);
-router.get('/login/:facebook_id', UserController.authenticate);
+router.post('/login/', UserController.authenticate);
 
 module.exports = router;

@@ -7,11 +7,6 @@ module.exports = {
             callback();
         });
     },
-    tearDown: function(callback) {
-        FixtureService.purgeDatabase(function() {
-            callback();
-        });
-    },
     testFindUserByFacebookId_ReturnsUser: function(test) {
         UserRepository.findUserByFacebookId(76354369436, function(err, user) {
             test.equal(user.name, "Tom Halley");
