@@ -2,17 +2,6 @@ var AuthService = require("../../../../app/models/services/AuthService"),
     Config = require("../../../../app/common/ConfigProvider").getConfig();
 
 module.exports = {
-    testGetAppAccessToken_ReturnsToken: function(test) {
-        AuthService.getAppAccessToken(
-            Config.facebook.app_id,
-            Config.facebook.app_secret,
-            function(err, token) {
-                test.equal(null, err);
-                test.notEqual(null, token);
-                test.done();
-            }
-        );
-    },
     testGetAppAccessToken_ReturnsErrorIfAppIdNull: function(test) {
         AuthService.getAppAccessToken(null, null, function(err, token) {
             test.notEqual(err, null);
@@ -30,5 +19,16 @@ module.exports = {
                 test.done();
             }
         );
-    }
+    },
+    testGetAppAccessToken_ReturnsToken: function(test) {
+        AuthService.getAppAccessToken(
+            Config.facebook.app_id,
+            Config.facebook.app_secret,
+            function(err, token) {
+                test.equal(null, err);
+                test.notEqual(null, token);
+                test.done();
+            }
+        );
+    },
 };

@@ -1,5 +1,5 @@
 module.exports = {
-    getFacebookUserDetails: function(accessToken, fbUserId, callback) {
+    createUserFromFacebookData: function(fbApiData, callback) {
 
     }
 };
