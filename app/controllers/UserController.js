@@ -9,7 +9,8 @@ module.exports = {
             req.body.user_id,
             function(err, data) {
                 if(err) {
-                    res.json(500, data);
+                    console.log(err);
+                    res.json(500, err);
                 } else {
                     res.json(200, data);
                 }

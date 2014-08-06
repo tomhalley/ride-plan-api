@@ -30,5 +30,14 @@ module.exports = {
             test.equal(user, null);
             test.done();
         });
+    },
+    testCreateUser_CanCreateUser: function(test) {
+        UserRepository.createUser(123456, "Bob", "bob@gmail.com", function(err, user) {
+            test.equal(err, null);
+            console.log(err);
+            console.log(user);
+            test.equal(user.name, "Bob");
+            test.done();
+        })
     }
 };

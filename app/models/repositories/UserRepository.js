@@ -7,8 +7,19 @@ var validateUserData = function(userData) {
 };
 
 module.exports = {
-    createUser: function(userData, callback) {
+    createUser: function(fbId, name, email, callback) {
+        Database.connect(function() {
+            var user = new User({
+                facebook_id: fbId,
+                name: name,
+                email: email
+            });
 
+            user.save(function(err, user) {
+                Database.close();
+                callback(err, user);
+            });
+        })
     },
     findUserByFacebookId: function(facebookId, callback) {
         Database.connect(function() {

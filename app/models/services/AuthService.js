@@ -21,10 +21,10 @@ var self = {
         var options = {
             host: "graph.facebook.com",
             port: 443,
-            path: "/oauth/access_token?" +
-            "client_id=" + appId +
-            "&client_secret=" + appSecret +
-            "&grant_type=client_credentials"
+            path: "/oauth/access_token" +
+                  "?client_id=" + appId +
+                  "&client_secret=" + appSecret +
+                  "&grant_type=client_credentials"
         };
 
         var req = https.get(options, function (res) {
@@ -35,13 +35,12 @@ var self = {
                     callback(data.error, null);
                 } catch (e) {
                     var splitData = data.split("=")[1];
-                    var resultParts = splitData.split("|");
 
-                    if (resultParts[0] != Config.facebook.app_id) {
+                    if (splitData.split("|")[0] != Config.facebook.app_id) {
                         console.error("Shit the bed!!! Man in the middle attack underway!!!");
                     }
 
-                    appToken = resultParts[1];
+                    appToken = splitData;
                     callback(null, appToken);
                 }
             });
@@ -59,12 +58,13 @@ var self = {
         }
 
         //2. Verify User Access Token
-
         var options = {
             host: "graph.facebook.com",
             port: 443,
-            path: "/debug_token?input_token=" + accessToken + "&access_token=" + appToken,
-            method: "GET"
+            method: "GET",
+            path: "/debug_token" +
+                  "?input_token=" + accessToken +
+                  "&access_token=" + appToken
         };
 
         var err;
@@ -73,24 +73,30 @@ var self = {
             res.on('data', function(result) {
                 result = JSON.parse(result);
 
+                // If data contains error...
                 if(result.error != undefined) {
                     console.error(result.error.message);
+                    console.info(options);
                     callback(result.error.message, null);
                 }
 
-                if(result.data.app_id != Config.facebook.app_id) {
-                    err = "What? The API responded with someone elses APP Id";
-                    console.error(err);
-                    callback(err, null);
+                if(result.data != undefined) {
+                    if (result.data.app_id != Config.facebook.app_id) {
+                        err = "What? The API responded with someone elses APP Id";
+                        console.error(err);
+                        console.info(options);
+                        callback(err, null);
+                    } else if (result.data.is_valid != true) {
+                        err = "For some reason the response says the AccessToken is not valid :(";
+                        console.error(err);
+                        console.info(options);
+                        callback(err, null)
+                    } else {
+                        callback(null, true);
+                    }
+                } else {
+                    callback("No Data returned from API", null);
                 }
-
-                if(result.data.is_valid != true) {
-                    err = "For some reason the response says the AccessToken is not valid :(";
-                    console.error(err);
-                    callback(err, null)
-                }
-
-                callback(null, result);
             })
         });
 
@@ -109,12 +115,30 @@ var self = {
                     callback(err, null);
                 }
 
-                self.verifyAccessToken(appToken, accessToken, function(err, tokenData) {
+                self.verifyAccessToken(appToken, accessToken, function(err, data) {
                     if(err) {
                         callback(err, null);
                     }
 
-                    callback(null, tokenData);
+                    if(data != true) {
+                        callback("Token was not valid", null);
+                    }
+
+                    UserRepository.findUserByFacebookId(fbUserId, function(err, user) {
+                        if(err) {
+                            callback(err, null);
+                        }
+
+                        if(user != null) {
+                            callback(null, user);
+                        } else {
+                            callback(err, null);
+                            //UserRepository.createUser({})
+                        }
+                    });
+
+
+
                 });
             }
         );
