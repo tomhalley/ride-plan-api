@@ -16,6 +16,9 @@ module.exports = {
             });
 
             user.save(function(err, user) {
+                user.__v = null;
+                user._id = null;
+
                 Database.close();
                 callback(err, user);
             });

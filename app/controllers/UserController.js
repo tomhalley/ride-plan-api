@@ -1,10 +1,11 @@
 var UserRepository = require("../models/repositories/UserRepository"),
     ResponseService = require("../models/services/ResponseService"),
-    AuthService = require("../models/services/AuthService");
+    AuthService = require("../models/services/AuthService"),
+    FacebookService = require("../models/services/FacebookService");
 
 module.exports = {
     authenticate: function(req, res) {
-        AuthService.authenticate(
+        FacebookService.authenticate(
             req.body.access_token,
             req.body.user_id,
             function(err, data) {
