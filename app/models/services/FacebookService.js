@@ -1,5 +1,6 @@
 var UserRepository = require("../repositories/UserRepository"),
     Config = require("../../common/ConfigProvider").getConfig(),
+    SessionService = require("../services/SessionService"),
     https = require('https');
 
 var appToken = null;
@@ -119,8 +120,6 @@ var self = {
             res.setEncoding('utf8');
             res.on('data', function(userData) {
                 userData = JSON.parse(userData);
-
-                console.log(userData);
                 callback(null, userData);
             });
 
@@ -141,7 +140,7 @@ var self = {
 
                 self.verifyAccessToken(appToken, accessToken, function (err, data) {
                     if (err) {
-                        callback(err, null);
+                        callback(err);
                     }
 
                     if (data != true) {
@@ -151,17 +150,25 @@ var self = {
                     UserRepository.findUserByFacebookId(fbUserId, function (err, user) {
                         if (err) {
                             // Return Error
-                            callback(err, null);
+                            callback(err);
                         } else if(user != null) {
                             // Return User
-                            callback(null, user);
+                            SessionService.sessionizeUser(user, function(err, session) {
+                                if(err) {
+                                    callback(err);
+                                } else if (session == null) {
+                                    callback("Unable to sessionize user");
+                                } else {
+                                    callback(null, session);
+                                }
+                            });
                         } else {
                             // Create New User
 
                             // 1. Get User Details
                             self.getUserDetails(accessToken, function(err, userData) {
                                 if(err) {
-                                    callback(err, null);
+                                    callback(err);
                                 }
 
                                 UserRepository.createUser(
@@ -169,7 +176,21 @@ var self = {
                                     userData.name,
                                     userData.email,
                                     function(err, user) {
-                                        callback(null, user);
+                                        if(err) {
+                                            callback(err);
+                                        } else if(user == null) {
+                                            callback("Could not create user");
+                                        } else {
+                                            SessionService.sessionizeUser(user, function(err, session) {
+                                                if(err) {
+                                                    callback(err);
+                                                } else if (session == null) {
+                                                    callback("Unable to sessionize user");
+                                                } else {
+                                                    callback(null, session);
+                                                }
+                                            });
+                                        }
                                     }
                                 );
                             });

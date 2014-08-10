@@ -1,10 +1,5 @@
 var Database = require("../../common/Database"),
-    User = require("../entities/User"),
-    ObjectId = require("mongodb").ObjectID;
-
-var validateUserData = function(userData) {
-
-};
+    User = require("../entities/User");
 
 module.exports = {
     createUser: function(fbId, name, email, callback) {
@@ -16,8 +11,9 @@ module.exports = {
             });
 
             user.save(function(err, user) {
-                user.__v = null;
-                user._id = null;
+                if(err || user == undefined) {
+                    callback("Unable to save user " + err);
+                }
 
                 Database.close();
                 callback(err, user);

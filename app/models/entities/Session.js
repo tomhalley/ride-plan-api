@@ -1,12 +1,11 @@
-var mongoose = require("mongoose");
+var mongoose = require("mongoose"),
+    ObjectId = mongoose.Schema.ObjectId;
 
 var SessionSchema = new mongoose.Schema({
     _id: {select: false},
     __v: {type: Number, select: false},
-    user_id: { type: Number, unique: true},
-    session_token: { type: String },
-    facebook_user_id: { type: Number, unique: true },
-    facebook_long_lived_token: { type: Number }
+    user_id: { type: ObjectId, unique: true},
+    token: { type: String, unique: true }
 });
 
 module.exports = mongoose.model("Session", SessionSchema);
