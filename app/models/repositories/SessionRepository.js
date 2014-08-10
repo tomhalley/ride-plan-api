@@ -17,6 +17,7 @@ module.exports = {
      * @param callback function
      */
     createSessionFromUserId: function(userId, callback) {
+
         console.log("Creating session for user " + userId);
 
         var token = createSessionToken(userId);
@@ -26,12 +27,14 @@ module.exports = {
             token: token
         });
 
-        session.save(function(err, session) {
-            console.log(err);
-            console.log(session);
-            Database.close();
-            callback(err, session);
-        });
+        Database.connect(function() {
+            session.save(function(err, session) {
+                console.log(err);
+                console.log(session);
+                Database.close();
+                callback(err, session);
+            });
+        })
     },
     /**
      * Find session object for a user if it exists
