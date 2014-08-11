@@ -2,11 +2,11 @@ var SessionRepository = require("../repositories/SessionRepository");
 
 module.exports = {
     sessionizeUser: function(user, callback) {
-        SessionRepository.findSessionByUserId(user._id, function(err, session) {
+        SessionRepository.findSessionByUserId(user.id, function(err, session) {
             if(err) {
                 callback(err, null);
             } else if (session === null) {
-                SessionRepository.createSessionFromUserId(user._id, function(err, session) {
+                SessionRepository.createSessionFromUserId(user.id, function(err, session) {
                     if(err) {
                         callback(err, null)
                     } else if (session === null) {

@@ -17,11 +17,7 @@ module.exports = {
      * @param callback function
      */
     createSessionFromUserId: function(userId, callback) {
-
-        console.log("Creating session for user " + userId);
-
         var token = createSessionToken(userId);
-        console.log("Created session token " + token);
         var session = new Session({
             user_id: userId,
             token: token
@@ -29,13 +25,12 @@ module.exports = {
 
         Database.connect(function() {
             session.save(function(err, session) {
-                console.log(err);
-                console.log(session);
                 Database.close();
                 callback(err, session);
             });
         })
     },
+
     /**
      * Find session object for a user if it exists
      *
@@ -43,8 +38,6 @@ module.exports = {
      * @param callback function
      */
     findSessionByUserId: function(userId, callback) {
-        console.log("Finding session by user" + userId);
-
         Database.connect(function() {
             Session.findOne({user_id: userId}, function(err, session) {
                 Database.close();
@@ -52,6 +45,13 @@ module.exports = {
             });
         });
     },
+
+    /**
+     * Find UserId by SessionToken
+     *
+     * @param sessionToken
+     * @param callback
+     */
     findgetUserBySessionToken: function(sessionToken, callback) {
         Database.connect(function() {
             Session.findOne({token: sessionToken}, function(err, session) {

@@ -1,6 +1,7 @@
 var SessionRepository = require("../../../../app/models/repositories/SessionRepository"),
     FixtureService = require("../../../../app/models/services/FixtureService"),
-    Session = require("./../../../../app/models/entities/Session"),
+    User = require("../../../../app/models/entities/User"),
+    Database = require("../../../../app/common/Database"),
     ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
@@ -10,20 +11,23 @@ module.exports = {
         });
     },
     testSessionRepository_CanGetSessionByUserId: function(test) {
-        var userObjectId = "230897461fh5";
-
-        SessionRepository.findSessionByUserId(userObjectId, function(err, user) {
-            test.equals(null, err);
-            test.equals(userObjectId, user._id);
-            test.done();
-        });
+        Database.connect(function() {
+            User.findOne({_id: new ObjectId("230897461fh5")}, function(err, user) {
+                Database.close();
+                SessionRepository.findSessionByUserId(user._id, function(err, session) {
+                    test.equals(null, err);
+                    test.equals(String(user._id), String(session.user_id));
+                    test.done();
+                });
+            });
+        })
     },
     testSessionRepository_CanCreateSession: function(test) {
-        var userObjectId = "38gkmn891sd7";
+        var userObjectId = new ObjectId("38gkmn891sd7");
 
         SessionRepository.createSessionFromUserId(userObjectId, function(err, session) {
             test.equals(err, null);
-            test.equals(userObjectId, session.user_id);
+            test.equals(String(userObjectId), String(session.user_id));
             test.done();
         });
     }
