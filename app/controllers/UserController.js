@@ -4,26 +4,26 @@ var UserRepository = require("../models/repositories/UserRepository"),
 
 module.exports = {
     authenticate: function(req, res) {
-        FacebookService.authenticate(
-            req.body.access_token,
-            req.body.user_id,
-            function(err, data) {
-                if(err) {
-                    console.log(err);
-                    res.json(500, err);
+        FacebookService.authenticate(req.body.access_token, req.body.user_id)
+            .then(function(data) {
+                res.json(200, data);
+            })
+            .fail(function(err) {
+                console.log(err);
+                res.json(500, err);
+            });
+    },
+    findByEmailAction: function(req, res) {
+        UserRepository.findUserByEmail(req.params.email)
+            .then(function(user) {
+                if(user == null || user == undefined) {
+                    res.json(400);
                 } else {
                     res.json(200, data);
                 }
-            }
-        );
-
-//        UserRepository.findUserByFacebookId(req.params.facebook_id, function(err, user) {
-//            ResponseService.responseWithBool(err, (user != null), res);
-//        });
-    },
-    findByEmailAction: function(req, res) {
-        UserRepository.findUserByEmail(req.params.email, function(err, user) {
-            ResponseService.respondWithObject(err, user, res);
-        });
+            })
+            .fail(function(err) {
+                res.json(500, err);
+            });
     }
 };

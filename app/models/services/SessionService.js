@@ -1,23 +1,33 @@
-var SessionRepository = require("../repositories/SessionRepository");
+var SessionRepository = require("../repositories/SessionRepository")
+    Q = require("q");
 
 module.exports = {
-    sessionizeUser: function(user, callback) {
-        SessionRepository.findSessionByUserId(user.id, function(err, session) {
-            if(err) {
-                callback(err, null);
-            } else if (session === null) {
-                SessionRepository.createSessionFromUserId(user.id, function(err, session) {
-                    if(err) {
-                        callback(err, null)
-                    } else if (session === null) {
-                        callback("Could not create session token for user", null);
-                    } else {
-                        callback(null, session);
-                    }
-                })
-            } else {
-                callback(session);
-            }
-        })
+    sessionizeUser: function(user) {
+        var deferred = Q.defer();
+
+        if(user == undefined) {
+            throw new Error("Parameter 'user' was undefined.");
+        }
+
+        SessionRepository.findSessionByUserId(user.id)
+            .then(function(session) {
+                if (session === null) {
+                    SessionRepository.createSessionFromUserId(user.id)
+                        .then(function(session) {
+                            if(session) {
+                                deferred.resolve(session);
+                            } else {
+                                deferred.reject(new Error("Could not create session token for user"));
+                            }
+                        })
+                        .done();
+
+                } else {
+                    deferred.resolve(session);
+                }
+            })
+            .done();
+
+        return deferred.promise;
     }
 };

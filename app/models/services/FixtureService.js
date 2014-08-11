@@ -1,18 +1,33 @@
-var fixtures = require('pow-mongodb-fixtures').connect(
+var Q = require("q"),
+    fixtures = require('pow-mongodb-fixtures').connect(
         require("../../common/ConfigProvider").getConnectionString()
     );
 
 module.exports = {
-    loadFixtures: function(fixtureSet, callback) {
+    loadFixtures: function(fixtureSet) {
+        var deferred = Q.defer();
+
         fixtures.clearAndLoad("../../../test/fixtures/" + fixtureSet, function(err) {
-            fixtures.client.close();
-            callback(err);
+            if(err) {
+                deferred.reject(new Error(err));
+            } else {
+                deferred.resolve();
+            }
         });
+
+        return deferred.promise;
     },
-    purgeDatabase: function(callback) {
+    purgeDatabase: function() {
+        var deferred = Q.defer();
+
         fixtures.clear(function(err) {
-            fixtures.client.close();
-            callback(err);
-        })
+            if(err) {
+                deferred.reject(new Error(err));
+            } else {
+                deferred.resolve();
+            }
+        });
+
+        return deferred.promise;
     }
 };

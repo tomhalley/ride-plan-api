@@ -1,6 +1,7 @@
 var Database = require("../../common/Database"),
     Session = require("../entities/Session"),
-    Crypto = require('crypto');
+    Crypto = require('crypto'),
+    Q = require("q");
 
 var createSessionToken = function(userId) {
     var sha = Crypto.createHash('sha256');
@@ -14,50 +15,84 @@ module.exports = {
      * Create session object in Database for user
      *
      * @param userId ObjectId
-     * @param callback function
      */
-    createSessionFromUserId: function(userId, callback) {
-        var token = createSessionToken(userId);
-        var session = new Session({
-            user_id: userId,
-            token: token
-        });
+    createSessionFromUserId: function(userId) {
+        var deferred = Q.defer();
 
-        Database.connect(function() {
-            session.save(function(err, session) {
-                Database.close();
-                callback(err, session);
-            });
-        })
+        if(userId == undefined) {
+            deferred.reject(new Error("Parameter 'userId' is undefined"));
+        }
+
+        Database.connect()
+            .then(function() {
+                return new Session({
+                    user_id: userId,
+                    token: createSessionToken(userId)
+                });
+            })
+            .then(function(session) {
+                session.save(function(err, session) {
+                    Database.close();
+
+                    if(err) {
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(session);
+                    }
+                });
+            })
+            .done();
+
+        return deferred.promise;
     },
 
     /**
      * Find session object for a user if it exists
      *
      * @param userId ObjectId
-     * @param callback function
      */
-    findSessionByUserId: function(userId, callback) {
-        Database.connect(function() {
-            Session.findOne({user_id: userId}, function(err, session) {
-                Database.close();
-                callback(err, session);
-            });
-        });
+    findSessionByUserId: function(userId) {
+        var deferred = Q.defer();
+
+        Database.connect()
+            .then(function() {
+                Session.findOne({user_id: userId}, function (err, session) {
+                    Database.close();
+
+                    if(err) {
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(session);
+                    }
+                });
+            })
+            .done();
+
+        return deferred.promise;
     },
 
     /**
      * Find UserId by SessionToken
      *
      * @param sessionToken
-     * @param callback
      */
-    findgetUserBySessionToken: function(sessionToken, callback) {
-        Database.connect(function() {
-            Session.findOne({token: sessionToken}, function(err, session) {
-                Database.close();
-                callback(err, session);
-            });
-        });
+    findgetUserBySessionToken: function(sessionToken) {
+        var deferred = Q.defer();
+
+        Database.connect()
+            .then(function() {
+                Session.findOne({token: sessionToken}, function (err, session) {
+                    Database.close();
+
+                    if (err) {
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(session);
+                    }
+                });
+            })
+            .done();
+
+        return deferred.promise;
     }
 };

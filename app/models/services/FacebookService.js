@@ -1,58 +1,13 @@
 var UserRepository = require("../repositories/UserRepository"),
-    Config = require("../../common/ConfigProvider").getConfig(),
+    ConfigProvider = require("../../common/ConfigProvider"),
+    Config = ConfigProvider.getConfig(),
     SessionService = require("../services/SessionService"),
-    https = require('https');
-
-var appToken = null;
+    https = require('https'),
+    Q = require("q");
 
 var self = {
-    getAppAccessToken: function(appId, appSecret, callback) {
-        if (appToken != null) {
-            callback(null, appToken);
-        }
-
-        if (appId == null || appSecret == null) {
-            callback("AppID or AppSecret not parsed into parameters", null);
-        }
-
-        var options = {
-            host: "graph.facebook.com",
-            port: 443,
-            path: "/oauth/access_token" +
-            "?client_id=" + appId +
-            "&client_secret=" + appSecret +
-            "&grant_type=client_credentials"
-        };
-
-        var req = https.get(options, function (res) {
-            res.setEncoding('utf8');
-            res.on('data', function (data) {
-                try {
-                    data = JSON.parse(data);
-                    callback(data.error, null);
-                } catch (e) {
-                    var splitData = data.split("=")[1];
-
-                    if (splitData.split("|")[0] != Config.facebook.app_id) {
-                        console.error("Shit the bed!!! Man in the middle attack underway!!!");
-                    }
-
-                    appToken = splitData;
-                    callback(null, appToken);
-                }
-            });
-        });
-
-        req.on('error', function (e) {
-            console.error('problem with request: ' + e.message);
-            callback(e, null);
-        })
-    },
-    verifyAccessToken: function(appToken, accessToken, callback) {
-        //1. Get App Access Token
-        if(appToken == null) {
-            callback("App Access Token not retrieved yet", null);
-        }
+    verifyAccessToken: function(accessToken) {
+        var deferred = Q.defer();
 
         //2. Verify User Access Token
         var options = {
@@ -61,50 +16,40 @@ var self = {
             method: "GET",
             path: "/debug_token" +
             "?input_token=" + accessToken +
-            "&access_token=" + appToken
+            "&access_token=" + ConfigProvider.getFacebookAppToken()
         };
 
-        var err;
-        var req = https.get(options, function(res) {
+        https.get(options, function(res) {
             res.setEncoding('utf8');
             res.on('data', function(result) {
                 result = JSON.parse(result);
 
                 // If data contains error...
                 if(result.error != undefined) {
-                    console.error(result.error.message);
-                    console.info(options);
-                    callback(result.error.message, null);
-                }
-
-                if(result.data != undefined) {
-                    if (result.data.app_id != Config.facebook.app_id) {
-                        err = "What? The API responded with someone elses APP Id";
-                        console.error(err);
-                        console.info(options);
-                        callback(err, null);
-                    } else if (result.data.is_valid != true) {
-                        err = "For some reason the response says the AccessToken is not valid :(";
-                        console.error(err);
-                        console.info(options);
-                        callback(err, null)
-                    } else {
-                        callback(null, true);
-                    }
+                    deferred.reject(new Error(result.error.message));
+                } else if (result.data == undefined) {
+                    deferred.reject(new Error("No Data returned from API"))
                 } else {
-                    callback("No Data returned from API", null);
+                    if (result.data.app_id != Config.facebook.app_id) {
+                        deferred.reject(new Error("What? The API responded with someone elses APP Id"))
+                    } else if (result.data.is_valid != true) {
+                        deferred.reject(new Error("For some reason the response says the AccessToken is not valid :("));
+                    } else {
+                        deferred.resolve(true);
+                    }
                 }
             })
+        }).on('error', function(e) {
+            deferred.reject(new Error(e.message));
         });
 
-        req.on('error', function(e) {
-            console.error('problem with request: ' + e.message);
-            callback(e, null);
-        });
+        return deferred.promise;
     },
-    getUserDetails: function(accessToken, callback) {
+    getUserDetails: function(accessToken) {
+        var deferred = Q.defer();
+
         if(accessToken == null) {
-            callback("AccessToken was null", null);
+            deferred.reject(new Error("AccessToken was null"));
         }
 
         //2. Verify User Access Token
@@ -119,86 +64,54 @@ var self = {
         https.get(options, function(res) {
             res.setEncoding('utf8');
             res.on('data', function(userData) {
-                userData = JSON.parse(userData);
-                callback(null, userData);
+                deferred.resolve(JSON.parse(userData));
             });
 
             res.on('error', function(err) {
-                callback(err, null);
+                deferred.reject(new Error(err));
             });
         });
+
+        return deferred.promise;
     },
     authenticate: function(accessToken, fbUserId, callback) {
-        //1. Verify Access Token
-        self.getAppAccessToken(
-            Config.facebook.app_id,
-            Config.facebook.app_secret,
-            function (err, appToken) {
-                if (err) {
-                    callback(err, null);
-                }
+        var deferred = Q.defer();
 
-                self.verifyAccessToken(appToken, accessToken, function (err, data) {
-                    if (err) {
-                        callback(err);
-                    }
-
-                    if (data != true) {
-                        callback("Token was not valid", null);
-                    }
-
-                    UserRepository.findUserByFacebookId(fbUserId, function (err, user) {
-                        if (err) {
-                            // Return Error
-                            callback(err);
-                        } else if(user != null) {
-                            // Return User
-                            SessionService.sessionizeUser(user, function(err, session) {
-                                if(err) {
-                                    callback(err);
-                                } else if (session == null) {
-                                    callback("Unable to sessionize user");
-                                } else {
-                                    callback(null, session);
-                                }
-                            });
-                        } else {
-                            // Create New User
-
-                            // 1. Get User Details
-                            self.getUserDetails(accessToken, function(err, userData) {
-                                if(err) {
-                                    callback(err);
-                                }
-
-                                UserRepository.createUser(
-                                    userData.id,
-                                    userData.name,
-                                    userData.email,
-                                    function(err, user) {
-                                        if(err) {
-                                            callback(err);
-                                        } else if(user == null) {
-                                            callback("Could not create user");
-                                        } else {
-                                            SessionService.sessionizeUser(user, function(err, session) {
-                                                if(err) {
-                                                    callback(err);
-                                                } else if (session == null) {
-                                                    callback("Unable to sessionize user");
-                                                } else {
-                                                    callback(null, session);
-                                                }
-                                            });
-                                        }
+        self.verifyAccessToken(accessToken)
+            .then(function() {
+                UserRepository.findUserByFacebookId(fbUserId)
+                    .then(function (user) {
+                        if (user != null) {
+                            SessionService.sessionizeUser(user)
+                                .then(function(session) {
+                                    if (session == null) {
+                                        deferred.reject(new Error("Unable to sessionize user"));
+                                    } else {
+                                        deferred.resolve(session.token);
                                     }
-                                );
-                            });
+                                })
+                        } else {
+                            self.getUserDetails(accessToken)
+                                .then(function (userData) {
+                                    UserRepository.createUser(userData.id, userData.name, userData.email)
+                                        .then(function (user) {
+                                            SessionService.sessionizeUser(user)
+                                                .then(function (session) {
+                                                    if (session == null) {
+                                                        deferred.reject(new Error("Unable to sessionize user"));
+                                                    } else {
+                                                        deferred.resolve(session.token);
+                                                    }
+                                                });
+                                        }
+                                    );
+                                })
                         }
                     });
-                });
-            }
-        );
+            })
+            .done();
+
+        return deferred.promise;
     }
 };
 

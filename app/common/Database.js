@@ -1,19 +1,24 @@
 var mongoose = require('mongoose'),
     ConfigProvider = require("./ConfigProvider"),
-    Config = ConfigProvider.getConfig();
+    Config = ConfigProvider.getConfig(),
+    Q = require("q");
 
 // Database methods
 module.exports = {
-    connect: function(callBack) {
-        var dbClient = mongoose.connect(ConfigProvider.getConnectionString(), Config.db.options);
+    connect: function() {
+        var deferred = Q.defer();
+
+        mongoose.connect(ConfigProvider.getConnectionString(), Config.db.options);
 
         var db = mongoose.connection;
         db.on('error', function(err) {
-            callBack(err, null)
+            deferred.reject(new Error(err));
         });
         db.once('open', function() {
-            callBack(null, dbClient);
+            deferred.resolve();
         });
+
+        return deferred.promise;
     },
     close: function() {
         mongoose.connection.close();

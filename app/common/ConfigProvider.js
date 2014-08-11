@@ -20,5 +20,10 @@ module.exports = {
         string += config.db.host + ":" + config.db.port + "/" + config.db.database;
 
         return string;
+    },
+    getFacebookAppToken: function() {
+        var config = this.getConfig();
+
+        return config.facebook.app_id + "|" + config.facebook.app_secret;
     }
 };
