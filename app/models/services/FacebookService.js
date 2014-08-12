@@ -74,7 +74,7 @@ var self = {
 
         return deferred.promise;
     },
-    authenticate: function(accessToken, fbUserId, callback) {
+    authenticate: function(accessToken, fbUserId) {
         var deferred = Q.defer();
 
         self.verifyAccessToken(accessToken)

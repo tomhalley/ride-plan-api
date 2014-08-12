@@ -18,7 +18,8 @@
     "static-favicon": "~1.0.0",
     "optimist": "~0.6.1",
     "pow-mongodb-fixtures": "~0.10.0",
-    "q": "~1.0.1"
+    "q": "~1.0.1",
+    "cors": "~2.4.1"
   },
   "devDependencies": {
     "nodeunit": "~0.9.0"

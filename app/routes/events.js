@@ -6,6 +6,7 @@ router.get('/', EventController.indexAction);
 router.get('/all', EventController.indexAction);
 router.get('/all/:perpage', EventController.indexAction);
 router.get('/all/:perpage/:page', EventController.indexAction);
+router.put('/create', EventController.createAction);
 
 router.get('/:id', EventController.eventAction);
 

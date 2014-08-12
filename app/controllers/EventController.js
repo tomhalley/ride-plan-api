@@ -14,5 +14,8 @@ module.exports = {
         EventRepository.getEventById(req.params.id, function(err, user) {
             ResponseService.respondWithObject(err, user, res);
         })
+    },
+    createAction: function(req, res) {
+        res.json(200);
     }
 };
