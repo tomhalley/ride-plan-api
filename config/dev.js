@@ -23,5 +23,8 @@ module.exports = {
     facebook: {
         app_id: 1478753505705619,
         app_secret: "51df55fc5c7a9a7e555d8ec26e131f72"
+    },
+    web: {
+        domain: "http://localhost:8000"
     }
 };

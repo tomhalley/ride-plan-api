@@ -28,6 +28,24 @@ module.exports = {
 
         return deferred.promise;
     },
+    findUserById: function(userId) {
+        var deferred = Q.defer();
+
+        Database.connect()
+            .then(function() {
+                User.findOne({_id: userId}, function(err, user) {
+                    Database.close();
+
+                    if(err) {
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(user);
+                    }
+                })
+            });
+
+        return deferred.promise;
+    },
     findUserByFacebookId: function(facebookId) {
         var deferred = Q.defer();
 

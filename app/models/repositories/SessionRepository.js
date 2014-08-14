@@ -72,11 +72,11 @@ module.exports = {
     },
 
     /**
-     * Find UserId by SessionToken
+     * Find session using the token
      *
      * @param sessionToken
      */
-    findgetUserBySessionToken: function(sessionToken) {
+    findSessionByToken: function(sessionToken) {
         var deferred = Q.defer();
 
         Database.connect()

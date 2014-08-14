@@ -1,5 +1,4 @@
-var mongoose = require("mongoose"),
-    ObjectId = mongoose.Schema.ObjectId;
+var mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
     facebook_id: {type: Number, unique: true},

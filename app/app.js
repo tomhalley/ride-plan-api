@@ -4,7 +4,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var cors = require('cors');
+var config = require("../app/common/ConfigProvider").getConfig();
+var cors = require("cors");
 
 var routes = require('./routes/index');
 var user = require('./routes/user');
@@ -21,7 +22,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(cors);
+app.use(cors({
+    origin: config.web.domain,
+    methods: "GET,PUT,POST",
+    allowHeaders: "Content-Type,Authorization"
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

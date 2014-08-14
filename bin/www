@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 var debug = require('debug')('MotoNet-Api'),
     app = require('../app/app'),
-    config = require('../app/common/ConfigProvider').getConfig();
+    config = require('../app/common/ConfigProvider').getConfig(),
+    Database = require("../app/common/Database");
 
 app.set('port', config.server.port);
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
-});
+// Check status of Database
+Database.connect()
+    .then(function() {
+        Database.close();
+        var server = app.listen(app.get('port'), function() {
+            debug('Express server listening on port ' + server.address().port);
+        });
+    })
+    .fail(function(err) {
+        console.error(err);
+    });

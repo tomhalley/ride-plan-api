@@ -1,5 +1,7 @@
 var EventRepository = require("../models/repositories/EventRepository"),
-    ResponseService = require("../models/services/ResponseService");
+    ResponseService = require("../models/services/ResponseService"),
+    SessionRepository = require("../models/repositories/SessionRepository"),
+    ObjectID = require("mongoose").Types.ObjectID;
 
 module.exports = {
     indexAction: function(req, res) {
@@ -16,6 +18,24 @@ module.exports = {
         })
     },
     createAction: function(req, res) {
-        res.json(200);
+        SessionRepository.findSessionByToken(req.headers.authorization)
+            .then(function(session) {
+                SessionRepository.findSessionByToken(new ObjectID(session.user_id))
+                    .then(function(session) {
+                        console.log(session);
+                    })
+                    .done();
+
+
+                EventRepository.createEvent(req.body.data, new ObjectID(session.user_id))
+                    .then(function(event) {
+                        res.json(200, event);
+                    })
+                    .fail(function(err) {
+                        console.error(err);
+                        res.json(500, err);
+                    })
+                    .done();
+            });
     }
 };

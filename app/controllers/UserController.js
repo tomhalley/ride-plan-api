@@ -1,5 +1,4 @@
 var UserRepository = require("../models/repositories/UserRepository"),
-    ResponseService = require("../models/services/ResponseService"),
     FacebookService = require("../models/services/FacebookService");
 
 module.exports = {
