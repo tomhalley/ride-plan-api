@@ -1,7 +1,8 @@
 var EventRepository = require("../models/repositories/EventRepository"),
     ResponseService = require("../models/services/ResponseService"),
     SessionRepository = require("../models/repositories/SessionRepository"),
-    ObjectID = require("mongoose").Types.ObjectID;
+    EventService = require("../models/services/EventService")
+    ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
     indexAction: function(req, res) {
@@ -18,24 +19,21 @@ module.exports = {
         })
     },
     createAction: function(req, res) {
-        SessionRepository.findSessionByToken(req.headers.authorization)
-            .then(function(session) {
-                SessionRepository.findSessionByToken(new ObjectID(session.user_id))
-                    .then(function(session) {
-                        console.log(session);
-                    })
-                    .done();
-
-
-                EventRepository.createEvent(req.body.data, new ObjectID(session.user_id))
-                    .then(function(event) {
-                        res.json(200, event);
-                    })
-                    .fail(function(err) {
-                        console.error(err);
-                        res.json(500, err);
-                    })
-                    .done();
-            });
+        Q.fcall(function() {
+            return EventService.validateEvent(req.body.data)
+        })
+        .then(function() {
+            return SessionRepository.findSessionByToken(req.headers.authorization)
+        })
+        .then(function(session) {
+            return EventRepository.createEvent(req.body.data, new ObjectId(session.user_id))
+        })
+        .then(function(event) {
+            res.json(200, event);
+        })
+        .catch(function(err) {
+            console.error(err);
+            res.json(500, err);
+        });
     }
 };

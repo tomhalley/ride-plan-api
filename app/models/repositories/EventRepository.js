@@ -1,7 +1,6 @@
 var Database = require("../../common/Database"),
     Event = require("../entities/Event"),
-    User = require("../entities/User"),
-    Q = require("q");
+    User = require("../entities/User");
 
 module.exports = {
     getEvents: function(count, page, callback) {
