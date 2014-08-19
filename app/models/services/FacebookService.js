@@ -52,7 +52,6 @@ var self = {
             deferred.reject(new Error("AccessToken was null"));
         }
 
-        //2. Verify User Access Token
         var options = {
             host: "graph.facebook.com",
             port: 443,
@@ -75,43 +74,26 @@ var self = {
         return deferred.promise;
     },
     authenticate: function(accessToken, fbUserId) {
-        var deferred = Q.defer();
-
-        self.verifyAccessToken(accessToken)
-            .then(function() {
-                UserRepository.findUserByFacebookId(fbUserId)
-                    .then(function (user) {
-                        if (user != null) {
-                            SessionService.sessionizeUser(user)
-                                .then(function(session) {
-                                    if (session == null) {
-                                        deferred.reject(new Error("Unable to sessionize user"));
-                                    } else {
-                                        deferred.resolve(session.token);
-                                    }
-                                })
-                        } else {
-                            self.getUserDetails(accessToken)
-                                .then(function (userData) {
-                                    UserRepository.createUser(userData.id, userData.name, userData.email)
-                                        .then(function (user) {
-                                            SessionService.sessionizeUser(user)
-                                                .then(function (session) {
-                                                    if (session == null) {
-                                                        deferred.reject(new Error("Unable to sessionize user"));
-                                                    } else {
-                                                        deferred.resolve(session.token);
-                                                    }
-                                                });
-                                        }
-                                    );
-                                })
-                        }
-                    });
-            })
-            .done();
-
-        return deferred.promise;
+        return self.verifyAccessToken(accessToken)
+        .then(function() {
+            return UserRepository.findUserByFacebookId(fbUserId);
+        })
+        .then(function (user) {
+            if (user != null) {
+                return SessionService.sessionizeUser(user)
+            } else {
+                self.getUserDetails(accessToken)
+                .then(function (userData) {
+                    return UserRepository.createUser(userData.id, userData.name, userData.email)
+                })
+                .then(function (user) {
+                    return SessionService.sessionizeUser(user)
+                })
+            }
+        })
+        .then(function(session) {
+            return session.token;
+        });
     }
 };
 
