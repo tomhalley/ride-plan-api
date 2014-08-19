@@ -7,8 +7,8 @@ module.exports = {
             .then(function(data) {
                 res.json(200, data);
             })
-            .fail(function(err) {
-                console.log(err);
+            .catch(function(err) {
+                console.log(err.stack);
                 res.json(500, err);
             });
     },

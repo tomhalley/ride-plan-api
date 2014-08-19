@@ -19,12 +19,11 @@ module.exports = {
         })
     },
     createAction: function(req, res) {
-        Q.fcall(function() {
-            return EventService.validateEvent(req.body.data)
-        })
-        .then(function() {
-            return SessionRepository.findSessionByToken(req.headers.authorization)
-        })
+        if(!EventService.validateEvent(req.body.data)) {
+            res.json(500);
+        }
+
+        SessionRepository.findSessionByToken(req.headers.authorization)
         .then(function(session) {
             return EventRepository.createEvent(req.body.data, new ObjectId(session.user_id))
         })
@@ -32,8 +31,8 @@ module.exports = {
             res.json(200, event);
         })
         .catch(function(err) {
-            console.error(err);
-            res.json(500, err);
+            console.error(err.stack);
+            //res.json(500, err);
         });
     }
 };

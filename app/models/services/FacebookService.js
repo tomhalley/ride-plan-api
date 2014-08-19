@@ -79,17 +79,17 @@ var self = {
             return UserRepository.findUserByFacebookId(fbUserId);
         })
         .then(function (user) {
-            if (user != null) {
-                return SessionService.sessionizeUser(user)
-            } else {
-                self.getUserDetails(accessToken)
+            if (user === null) {
+                return self.getUserDetails(accessToken)
                 .then(function (userData) {
-                    return UserRepository.createUser(userData.id, userData.name, userData.email)
+                    return UserRepository.createUser(userData.id, userData.name, userData.email);
                 })
-                .then(function (user) {
-                    return SessionService.sessionizeUser(user)
-                })
+            } else {
+                return user;
             }
+        })
+        .then(function(user) {
+            return SessionService.sessionizeUser(user);
         })
         .then(function(session) {
             return session.token;

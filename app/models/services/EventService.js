@@ -1,11 +1,13 @@
 module.exports = {
     validateEvent: function(eventData) {
         if(eventData == undefined || eventData == null) {
-            throw new Error("EventData was empty");
+            console.log("EventData was empty");
+            return false;
         }
 
         if(eventData.name == undefined || eventData.name == null) {
-            throw new Error("Event did not have a name");
+            console.log("Event did not have a name");
+            return false;
         }
 
         return true;
