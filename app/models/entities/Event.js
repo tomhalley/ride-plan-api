@@ -1,15 +1,17 @@
 var mongoose = require("mongoose");
 
 var EventSchema = new mongoose.Schema({
+    _id: String,
     name: String,
-    start_date_time: Date,
-    end_date_time: Date,
     origin: String,
-    destination: String,
-    created_by: mongoose.Schema.ObjectId,
     waypoints: Array,
-    avoidTolls: Boolean,
-    avoidHighways: Boolean,
+    destination: String,
+    start_time: Date,
+    end_time: Date,
+    avoid_tolls: Boolean,
+    avoid_highways: Boolean,
+    is_private: Boolean,
+    created_by: mongoose.Schema.ObjectId,
     comments: Array
 });
 

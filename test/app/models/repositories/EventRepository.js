@@ -1,5 +1,4 @@
 var EventRepository = require("../../../../app/models/repositories/EventRepository"),
-    FixtureService = require("../../../../app/models/services/FixtureService")
     ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {

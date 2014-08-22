@@ -1,24 +1,34 @@
 var Database = require("../../common/Database"),
     Event = require("../entities/Event"),
     User = require("../entities/User"),
-    Q = require("q");
+    Q = require("q"),
+    crc = require("crc");
+
+var createEventHash = function(eventData) {
+    return crc.crc32(JSON.stringify(eventData));
+};
 
 module.exports = {
-    getEvents: function(count, page, callback) {
+    getEvents: function(callback) {
         Database.connect()
-            .test(function() {
-                Event.find({} , function(err, events) {
+            .then(function() {
+                var query = Event.find({}).select({
+                    _id: 1,
+                    name: 1,
+                    origin: 1,
+                    destination: 1
+                });
+
+                query.exec(function(err, events) {
                     Database.close();
                     callback(err, events);
                 })
-                    .skip((page - 1) * count)
-                    .limit(count);
             });
     },
     getEventById: function(id, callback) {
         Database.connect()
             .then(function() {
-                Event.findOne({'id': id}, function(err, event) {
+                Event.findOne({'_id': id}, function(err, event) {
                     Database.close();
                     callback(err, event);
                 });
@@ -30,15 +40,17 @@ module.exports = {
         Database.connect()
             .then(function() {
                 var event = new Event({
+                    _id: createEventHash(eventData),
                     name: eventData.name,
-                    //start_date_time: eventData,
-                    //end_date_time: Date,
                     origin: eventData.origin,
-                    destination: eventData.destination,
-                    created_by: userId,
                     waypoints: eventData.waypoints,
-                    avoidTolls: eventData.avoidTolls,
-                    avoidHighways: eventData.avoidHighways
+                    destination: eventData.destination,
+                    start_time: eventData.start_time,
+                    end_time: eventData.end_time,
+                    avoid_tolls: eventData.avoid_tolls,
+                    avoid_highways: eventData.avoid_highways,
+                    is_private: eventData.is_private,
+                    created_by: userId
                 });
 
                 event.save(function(err, event) {

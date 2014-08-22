@@ -6,10 +6,7 @@ var EventRepository = require("../models/repositories/EventRepository"),
 
 module.exports = {
     indexAction: function(req, res) {
-        var count = req.params.perpage != undefined ? req.params.perpage : 20;
-        var page = req.params.page != undefined ? req.params.page : 1;
-
-        EventRepository.getEvents(count, page, function(err, events) {
+        EventRepository.getEvents(function(err, events) {
             ResponseService.respondWithObject(err, events, res);
         })
     },
