@@ -18,7 +18,7 @@ module.exports = {
                     Database.close();
 
                     if(err || user == undefined) {
-                        deferred.reject(new Error("Unable to save user"));
+                        deferred.reject(new Error(err || "Unable to save user"));
                     } else {
                         deferred.resolve(user);
                     }
