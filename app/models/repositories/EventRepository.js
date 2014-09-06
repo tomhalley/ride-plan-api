@@ -16,7 +16,8 @@ module.exports = {
                     _id: 1,
                     name: 1,
                     origin: 1,
-                    destination: 1
+                    destination: 1,
+                    waypoints: 1
                 });
 
                 query.exec(function(err, events) {
