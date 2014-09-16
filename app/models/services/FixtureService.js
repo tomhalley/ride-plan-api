@@ -10,14 +10,14 @@ module.exports = {
         fixtures.clearAndLoad("../../../test/fixtures/" + fixtureSet, function(err) {
             if(err) {
                 deferred.reject(err);
-            } else {
-                deferred.resolve();
             }
 
             fixtures.close(function() {
-                return deferred.promise;
+                deferred.resolve();
             });
         });
+
+        return deferred.promise;
     },
     purgeDatabase: function() {
         var deferred = Q.defer();
@@ -25,13 +25,13 @@ module.exports = {
         fixtures.clear(function(err) {
             if(err) {
                 deferred.reject(err);
-            } else {
-                deferred.resolve();
             }
 
             fixtures.close(function() {
-                return deferred.promise;
+                deferred.resolve();
             });
         });
+
+        return deferred.promise;
     }
 };
