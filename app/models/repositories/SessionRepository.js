@@ -1,5 +1,5 @@
-var Database = require("../../common/Database"),
-    Session = require("../entities/Session"),
+var Database = require(process.env.PROJECT_PATH + "/app/common/Database"),
+    Session = require(process.env.PROJECT_PATH + "/app/models/entities/Session"),
     Crypto = require('crypto'),
     Q = require("q");
 
@@ -60,7 +60,7 @@ module.exports = {
                     Database.close();
 
                     if(err) {
-                        deferred.reject(new Error(err));
+                        deferred.reject(err);
                     } else {
                         deferred.resolve(session);
                     }

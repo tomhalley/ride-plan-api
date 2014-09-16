@@ -1,33 +1,44 @@
-var SessionService = require("../../../../app/models/services/SessionService"),
-    Database = require("../../../../app/common/Database"),
-    FixtureService = require("../../../../app/models/services/FixtureService"),
-    User = require("../../../../app/models/entities/User"),
-    Session = require("../../../../app/models/entities/Session"),
+var Mockery = require("mockery"),
+    SessionService = require(process.env.PROJECT_PATH + "/app/models/services/SessionService"),
     ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
     setUp: function(callback) {
-        FixtureService.loadFixtures("default")
-            .then(callback)
-            .done();
+        Mockery.enable();
+
+        // Register Mocks
+        Mockery.registerSubstitute(
+            process.env.PROJECT_PATH + "/app/common/Database",
+            process.env.PROJECT_PATH + "/test/mocks/common/Database"
+        );
+
+        Mockery.registerSubstitute(
+            process.env.PROJECT_PATH + "/app/models/entities/Session",
+            process.env.PROJECT_PATH + "/test/mocks/models/entities/Session"
+        );
+
+        callback();
+    },
+    tearDown: function(callback) {
+        Mockery.disable();
+
+        // Deregister Mocks
+        Mockery.deregisterSubstitute(process.env.PROJECT_PATH + "/app/common/Database");
+        Mockery.deregisterSubstitute(process.env.PROJECT_PATH + "/app/models/entities/Session");
+
+        callback();
     },
     testSessionizeUser_CreatesSessionIfOneDoesntExist: function(test) {
-        Database.connect()
-            .then(function() {
-                Session.collection.remove(function() {
-                    User.findOne({_id: new ObjectId("230897461fh5")}, function(err, user) {
 
-                        SessionService.sessionizeUser(user)
-                            .then(function(session) {
-                                test.equals(String(session.user_id), String(new ObjectId("230897461fh5")));
-                            })
-                            .done();
-                    });
-                });
+        var user = {
+            id: new ObjectId("230897461fh5")
+        };
+
+        SessionService.sessionizeUser(user)
+            .then(function(session) {
+                test.equals(String(session.user_id), String(new ObjectId("230897461fh5")));
             })
             .done(function() {
-                Database.close();
-                console.log("Connection is now closed");
                 test.done();
             });
     }
