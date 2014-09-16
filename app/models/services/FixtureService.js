@@ -9,25 +9,29 @@ module.exports = {
 
         fixtures.clearAndLoad("../../../test/fixtures/" + fixtureSet, function(err) {
             if(err) {
-                deferred.reject(new Error(err));
+                deferred.reject(err);
             } else {
                 deferred.resolve();
             }
-        });
 
-        return deferred.promise;
+            fixtures.close(function() {
+                return deferred.promise;
+            });
+        });
     },
     purgeDatabase: function() {
         var deferred = Q.defer();
 
         fixtures.clear(function(err) {
             if(err) {
-                deferred.reject(new Error(err));
+                deferred.reject(err);
             } else {
                 deferred.resolve();
             }
-        });
 
-        return deferred.promise;
+            fixtures.close(function() {
+                return deferred.promise;
+            });
+        });
     }
 };

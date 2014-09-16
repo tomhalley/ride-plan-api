@@ -12,7 +12,7 @@ module.exports = {
 
         var db = mongoose.connection;
         db.on('error', function(err) {
-            deferred.reject(new Error(err));
+            deferred.reject(err);
         });
         db.once('open', function() {
             deferred.resolve();
