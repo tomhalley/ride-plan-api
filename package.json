@@ -4,7 +4,10 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www"
+      "install": "npm install",
+      "update": "npm update",
+      "start": "node ./bin/www",
+      "test": "istanbul test nodeunit test/testRunner.js"
   },
   "dependencies": {
     "body-parser": "~1.0.0",
@@ -24,6 +27,7 @@
   "devDependencies": {
     "pow-mongodb-fixtures": "~0.10.0",
     "nodeunit": "~0.9.0",
-    "mockery": "~1.4.0"
+    "rewire": "~2.1.0",
+    "jscoverage": "~0.5.6"
   }
 }

@@ -1,4 +1,5 @@
 node_modules/
+coverage/
 .idea/
 atlassian-ide-plugin.xml
 .vagrant/machines/

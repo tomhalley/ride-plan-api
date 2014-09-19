@@ -1,5 +1,5 @@
-var Database = require(process.env.PROJECT_PATH + "/app/common/Database"),
-    Session = require(process.env.PROJECT_PATH + "/app/models/entities/Session"),
+var Database = require("../../common/Database"),
+    Session = require("../entities/Session"),
     Crypto = require('crypto'),
     Q = require("q");
 

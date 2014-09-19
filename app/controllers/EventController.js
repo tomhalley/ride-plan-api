@@ -1,7 +1,7 @@
 var EventRepository = require("../models/repositories/EventRepository"),
     ResponseService = require("../models/services/ResponseService"),
     SessionRepository = require("../models/repositories/SessionRepository"),
-    EventService = require("../models/services/EventService")
+    EventService = require("../models/services/EventService"),
     ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {

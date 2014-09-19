@@ -5,9 +5,13 @@ var UserRepository = require("../repositories/UserRepository"),
     https = require('https'),
     Q = require("q");
 
-var self = {
+var FacebookService = {
     verifyAccessToken: function(accessToken) {
         var deferred = Q.defer();
+
+        if(accessToken == null || accessToken == undefined) {
+            deferred.reject(new Error("Access token parameter was null"));
+        }
 
         //2. Verify User Access Token
         var options = {
@@ -74,13 +78,13 @@ var self = {
         return deferred.promise;
     },
     authenticate: function(accessToken, fbUserId) {
-        return self.verifyAccessToken(accessToken)
+        return FacebookService.verifyAccessToken(accessToken)
         .then(function() {
             return UserRepository.findUserByFacebookId(fbUserId);
         })
         .then(function (user) {
             if (user === null) {
-                return self.getUserDetails(accessToken)
+                return FacebookService.getUserDetails(accessToken)
                 .then(function (userData) {
                     return UserRepository.createUser(userData.id, userData.name, userData.email);
                 })
@@ -97,4 +101,4 @@ var self = {
     }
 };
 
-module.exports = self;
+module.exports = FacebookService;
