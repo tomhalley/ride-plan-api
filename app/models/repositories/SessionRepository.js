@@ -19,23 +19,22 @@ module.exports = {
     createSessionFromUserId: function(userId) {
         var deferred = Q.defer();
 
-        if(userId == undefined) {
+        if(userId == null || userId == undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
         }
 
         Database.connect()
             .then(function() {
-                return new Session({
+                var session = new Session({
                     user_id: userId,
                     token: createSessionToken(userId)
                 });
-            })
-            .then(function(session) {
+
                 session.save(function(err, session) {
                     Database.close();
 
                     if(err) {
-                        deferred.reject(new Error(err));
+                        deferred.reject(err);
                     } else {
                         deferred.resolve(session);
                     }
@@ -85,7 +84,7 @@ module.exports = {
                     Database.close();
 
                     if (err) {
-                        deferred.reject(new Error(err));
+                        deferred.reject(err);
                     } else {
                         deferred.resolve(session);
                     }

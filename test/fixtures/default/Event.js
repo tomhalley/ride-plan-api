@@ -1,4 +1,4 @@
-exports.events = [
+module.exports = [
     {
         _id: 1,
         name: "Boxhill - Brighton",

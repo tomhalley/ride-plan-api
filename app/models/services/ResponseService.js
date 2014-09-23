@@ -1,18 +1,18 @@
 module.exports = {
     respondWithObject: function (err, record, res) {
         if (record === null) {
-            res.json(404, "Record not found");
+            res.status(404).json("Record not found");
         } else if (err !== null) {
-            res.json(500, err.message);
+            res.status(500).json(err.message);
         } else {
-            res.json(200, record);
+            res.status(200).json(record);
         }
     },
     responseWithBool: function(err, bool, res) {
         if(bool) {
-            res.json(200);
+            res.status(200);
         } else {
-            res.json(404);
+            res.status(404);
         }
     }
 };

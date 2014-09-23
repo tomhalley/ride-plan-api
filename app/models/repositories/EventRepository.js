@@ -9,31 +9,53 @@ var createEventHash = function(eventData) {
 };
 
 module.exports = {
-    getEvents: function(callback) {
+    getEvents: function() {
+        var deferred = Q.defer();
+
         Database.connect()
             .then(function() {
-                var query = Event.find({}).select({
+                Event.find({}).select({
                     _id: 1,
                     name: 1,
                     origin: 1,
                     destination: 1,
                     waypoints: 1
-                });
-
-                query.exec(function(err, events) {
-                    Database.close();
-                    callback(err, events);
                 })
-            });
+                .exec(function(err, events) {
+                    Database.close();
+
+                    if(err) {
+                        deferred.reject(err);
+                    } else {
+                        deferred.resolve(events);
+                    }
+                })
+            })
+            .done();
+
+        return deferred.promise;
     },
-    getEventById: function(id, callback) {
+    getEventById: function(eventId) {
+        var deferred = Q.defer();
+
+        if(eventId == null || eventId == undefined) {
+            deferred.reject(new Error("EventId cannot be null"));
+        }
+
         Database.connect()
             .then(function() {
-                Event.findOne({'_id': id}, function(err, event) {
+                Event.findOne({'_id': eventId}, function(err, event) {
                     Database.close();
-                    callback(err, event);
+
+                    if(err) {
+                        deferred.reject(err);
+                    } else {
+                        deferred.resolve(event);
+                    }
                 });
             });
+
+        return deferred.promise;
     },
     createEvent: function(eventData, userId) {
         var deferred = Q.defer();
@@ -58,7 +80,7 @@ module.exports = {
                     Database.close();
 
                     if(err) {
-                        deferred.reject(new Error(err));
+                        deferred.reject(err);
                     } else {
                         deferred.resolve(event);
                     }

@@ -5,5 +5,5 @@ process.env.NODE_ENV = "test";
 
 var testPath = process.env.PROJECT_PATH + "test/app";
 
-exports.SessionService = require(testPath + "/models/services/SessionService");
-exports.FacebookService = require(testPath + "/models/services/FacebookService");
+exports.EventRepository = require(testPath + "/models/repositories/EventRepository");
+//exports.FacebookService = require(testPath + "/models/services/FacebookService");

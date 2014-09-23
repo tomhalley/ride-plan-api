@@ -44,7 +44,7 @@ var FacebookService = {
                 }
             })
         }).on('error', function(e) {
-            deferred.reject(new Error(e.message));
+            deferred.reject(e);
         });
 
         return deferred.promise;
