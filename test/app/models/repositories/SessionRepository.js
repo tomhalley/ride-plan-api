@@ -9,95 +9,100 @@ module.exports = {
         SessionRepository.__set__("Database", DatabaseMock);
         callback();
     },
-    /**
-     * CreateSessionFromUserId
-     */
-    testCreateSessionFromUserId_CanCreateSession: function(test){
-        // Arrange
-        SessionRepository.__set__("Session", SessionMock.mockInstantiation());
-        var userId = new ObjectId("345093842835");
 
-        // Act
-        SessionRepository.createSessionFromUserId(userId)
-            .fail(function(err) {
-                console.error(err);
-            })
-            .then(function(session) {
-                test.equal(session.user_id, userId);
-                test.done();
-            })
-            .done();
-    },
-    testCreateSessionFromUserId_ThrowsExceptionIfUserIdIsNotObjectId: function(test) {
-        // Arrange
-        var userId = "345093842835";
+    createSessionFromUserId: {
+        testCanCreateSession: function(test){
+            // Arrange
+            SessionRepository.__set__("Session", SessionMock.mockInstantiation());
+            var userId = new ObjectId("345093842835");
 
-        // Act
-        SessionRepository.createSessionFromUserId(userId)
-            .fail(function(err) {
-                test.equal(err.message, "UserId was not of type 'ObjectId'");
-                test.done();
-            })
-            .done();
-    },
-    testCreateSessionFromUserId_ThrowsExceptionIfNoUserIdSet: function(test) {
-        // Act
-        SessionRepository.createSessionFromUserId(null)
-            .fail(function(err) {
-                test.equal(err.message, "Parameter 'userId' is undefined");
-                test.done();
-            })
-            .done();
-    },
-    testCreateSessionFromUserId_ThrowsExceptionIfSessionCantBeSaved: function(test) {
-        // Arrange
+            // Act
+            SessionRepository.createSessionFromUserId(userId)
+                .then(function(session) {
+                    test.equal(session.user_id, userId);
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfUserIdIsNotObjectId: function(test) {
+            // Arrange
+            var userId = "345093842835";
 
-        // Act
-    },
-    /**
-     * FindSessionByUserId
-     */
-    testFindSessionByUserId_CanFindSessionByUserId: function(test) {
-        // Arrange
+            // Act
+            SessionRepository.createSessionFromUserId(userId)
+                .fail(function(err) {
+                    test.equal(err.message, "UserId was not of type 'ObjectId'");
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfNoUserIdSet: function(test) {
+            // Act
+            SessionRepository.createSessionFromUserId(null)
+                .fail(function(err) {
+                    test.equal(err.message, "Parameter 'userId' is undefined");
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfSessionCantBeSaved: function(test) {
+            // Arrange
+            SessionMock.mockReturnError("Failed saving session");
+            var userId = new ObjectId("345093842835");
 
-        // Act
+            // Act
+            SessionRepository.createSessionFromUserId(userId)
+                .fail(function(err) {
+                    test.equal(err.message, "Failed saving session");
+                    test.done();
+                })
+                .done();
+        }
     },
-    testFindSessionByUserId_ReturnsNullIfNoUserFound: function(test) {
-        // Arrange
 
-        // Act
+    findSessionByUserId: {
+        testCanFindSession: function(test) {
+            // Arrange
+
+            // Act
+        },
+        testReturnsNullIfNoUserFound: function(test) {
+            // Arrange
+
+            // Act
+        },
+        testThrowsExceptionIfNoUserIdSet: function(test) {
+            // Arrange
+
+            // Act
+        },
+        testThrowsExceptionIfUserCannotBeRetrieved: function(test) {
+            // Arrange
+
+            // Act
+        }
     },
-    testFindSessionByUserId_ThrowsExceptionIfNoUserIdSet: function(test) {
-        // Arrange
 
-        // Act
-    },
-    testFindSessionByUserId_ThrowsExceptionIfUserCannotBeRetrieved: function(test) {
-        // Arrange
+    findSessionByToken: {
+        testCanFindSessionByToken: function(test) {
+            // Arrange
 
-        // Act
-    },
-    /**
-     * FindSessionByToken
-     */
-    testFindSessionByToken_CanFindSessionByToken: function(test) {
-        // Arrange
+            // Act
+        },
+        testReturnsNullIfNoSessionFound: function(test) {
+            // Arrange
 
-        // Act
-    },
-    testFindSessionByToken_ReturnsNullIfNoSessionFound: function(test) {
-        // Arrange
+            // Act
+        },
+        testThrowsExceptionIfNoSessionTokenSet: function(test) {
+            // Arrange
 
-        // Act
-    },
-    testFindSessionByToken_ThrowsExceptionIfNoSessionTokenSet: function(test) {
-        // Arrange
+            // Act
+        },
+        testThrowsExceptionIfSessionCannotBeRetrieved: function(test) {
+            // Arrange
 
-        // Act
-    },
-    testFindSessionByToken_ThrowsExceptionIfSessionCannotBeRetrieved: function(test) {
-        // Arrange
-
-        // Act
+            // Act
+        }
     }
 };

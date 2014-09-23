@@ -1,13 +1,12 @@
 var sessionFixtures = require(process.env.PROJECT_PATH + "/test/fixtures/default/Session");
 
+var returnError = false;
+
 module.exports = {
     collection: {
         remove: function(callback) {
             callback();
         }
-    },
-    save: {
-
     },
     findOne: function(object, callback) {
         var userId = object['user_id'];
@@ -20,11 +19,18 @@ module.exports = {
 
         callback(new Error("Could not find user"));
     },
+    mockReturnError: function(errorMessage) {
+        returnError = errorMessage;
+    },
     mockInstantiation: function() {
         return function(parameters) {
             return {
                 save: function (callback) {
-                    callback(null, parameters);
+                    if(returnError) {
+                        callback(new Error(returnError));
+                    } else {
+                        callback(null, parameters);
+                    }
                 }
             }
         }

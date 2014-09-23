@@ -20,8 +20,6 @@ module.exports = {
     createSessionFromUserId: function(userId) {
         var deferred = Q.defer();
 
-        console.log(typeof(userId));
-
         if (userId == null || userId == undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
         } else if(!(userId instanceof ObjectId)) {
