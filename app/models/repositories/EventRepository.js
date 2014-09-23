@@ -60,33 +60,41 @@ module.exports = {
     createEvent: function(eventData, userId) {
         var deferred = Q.defer();
 
-        Database.connect()
-            .then(function() {
-                var event = new Event({
-                    _id: createEventHash(eventData),
-                    name: eventData.name,
-                    origin: eventData.origin,
-                    waypoints: eventData.waypoints,
-                    destination: eventData.destination,
-                    start_time: eventData.start_time,
-                    end_time: eventData.end_time,
-                    avoid_tolls: eventData.avoid_tolls,
-                    avoid_highways: eventData.avoid_highways,
-                    is_private: eventData.is_private,
-                    created_by: userId
-                });
+        if(eventData == null || eventData == undefined) {
+            deferred.reject(new Error("Parameter 'eventData' is undefined"));
+        } else if (userId == null || userId == undefined) {
+            deferred.reject(new Error("Parameter 'userId' is undefined"));
+        } else {
+            Database.connect()
+                .then(function() {
+                    var event = new Event({
+                        _id: createEventHash(eventData),
+                        name: eventData.name,
+                        origin: eventData.origin,
+                        waypoints: eventData.waypoints,
+                        destination: eventData.destination,
+                        start_time: eventData.start_time,
+                        end_time: eventData.end_time,
+                        avoid_tolls: eventData.avoid_tolls,
+                        avoid_highways: eventData.avoid_highways,
+                        is_private: eventData.is_private,
+                        created_by: userId
+                    });
 
-                event.save(function(err, event) {
-                    Database.close();
+                    event.save(function(err, event) {
+                        Database.close();
 
-                    if(err) {
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(event);
-                    }
-                });
-            })
-            .done();
+                        if(err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(event);
+                        }
+                    });
+                })
+                .done();
+        }
+
+
 
         return deferred.promise;
     }

@@ -58,7 +58,7 @@ module.exports = {
             // Act
             EventRepository.getEventById()
                 .fail(function(err) {
-                    test.equals(err.message, "EventId cannot be null");
+                    test.equal(err.message, "EventId cannot be null");
                     test.done();
                 })
                 .done();
@@ -70,7 +70,7 @@ module.exports = {
             // Act
             EventRepository.getEventById(12)
                 .fail(function(err) {
-                    test.equals(err.message, "Entity Failed");
+                    test.equal(err.message, "Entity Failed");
                     test.done();
                 })
                 .done();
@@ -80,11 +80,10 @@ module.exports = {
     createEvent: {
         testCreatesEvent: function(test) {
             // Arrange
-            EventMock.mockReturnError("Entity Failed");
+            EventMock.mockReturnError(false);
             EventRepository.__set__("Event", EventMock.mockInstantiation());
 
-            // Act
-            var userId = new ObjectId("230897461fh5");
+            var userId = "230897461fh5";
             var eventData = {
                 name: "Toms Test Event",
                 origin: "56.26392,9.50178500000004",
@@ -97,10 +96,72 @@ module.exports = {
                 is_private: 0
             };
 
+            // Act
             EventRepository.createEvent(eventData, userId)
                 .then(function(event) {
-                    test.equals(event.name, "Toms Test Event");
-                    test.equals(event.created_by, userId);
+                    test.equal(event.name, "Toms Test Event");
+                    test.equal(event.created_by, userId);
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfNoEventData: function(test) {
+            // Arrange
+            EventMock.mockReturnError(false);
+            var userId = "230897461fh5";
+
+            // Act
+            EventRepository.createEvent(null, userId)
+                .fail(function(error) {
+                    test.equal(error.message, "Parameter 'eventData' is undefined");
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfNoUserId: function(test) {
+            // Arrange
+            var eventData = {
+                name: "Toms Test Event",
+                origin: "56.26392,9.50178500000004",
+                waypoints: [],
+                destination: "52.132633,5.2912659999999505",
+                start_time: "2014-09-09 12:00:00",
+                end_time: "2014-09-09 20:00:00",
+                avoid_tolls: 1,
+                avoid_highways: 0,
+                is_private: 0
+            };
+
+            // Act
+            EventRepository.createEvent(eventData)
+                .fail(function(error) {
+                    test.equal(error.message, "Parameter 'userId' is undefined");
+                    test.done();
+                })
+                .done();
+        },
+        testThrowsExceptionIfFailedToCreateEvent: function(test) {
+            // Arrange
+            EventMock.mockReturnError("Failed to create event");
+            EventRepository.__set__("Event", EventMock.mockInstantiation());
+
+            var userId = "230897461fh5";
+            var eventData = {
+                name: "Toms Test Event",
+                origin: "56.26392,9.50178500000004",
+                waypoints: [],
+                destination: "52.132633,5.2912659999999505",
+                start_time: "2014-09-09 12:00:00",
+                end_time: "2014-09-09 20:00:00",
+                avoid_tolls: 1,
+                avoid_highways: 0,
+                is_private: 0
+            };
+
+            // Act
+            EventRepository.createEvent(eventData, userId)
+                .fail(function(error) {
+                    test.equal(error.message, "Failed to create event");
                     test.done();
                 })
                 .done();
