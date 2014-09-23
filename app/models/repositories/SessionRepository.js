@@ -1,6 +1,7 @@
 var Database = require("../../common/Database"),
     Session = require("../entities/Session"),
     Crypto = require('crypto'),
+    ObjectId = require("mongoose").Types.ObjectId,
     Q = require("q");
 
 var createSessionToken = function(userId) {
@@ -19,28 +20,32 @@ module.exports = {
     createSessionFromUserId: function(userId) {
         var deferred = Q.defer();
 
-        if(userId == null || userId == undefined) {
+        console.log(typeof(userId));
+
+        if (userId == null || userId == undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
+        } else if(!(userId instanceof ObjectId)) {
+            deferred.reject(new Error("UserId was not of type 'ObjectId'"));
+        } else {
+            Database.connect()
+                .then(function () {
+                    var session = new Session({
+                        user_id: userId,
+                        token: createSessionToken(userId)
+                    });
+
+                    session.save(function (err, session) {
+                        Database.close();
+
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(session);
+                        }
+                    });
+                })
+                .done();
         }
-
-        Database.connect()
-            .then(function() {
-                var session = new Session({
-                    user_id: userId,
-                    token: createSessionToken(userId)
-                });
-
-                session.save(function(err, session) {
-                    Database.close();
-
-                    if(err) {
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(session);
-                    }
-                });
-            })
-            .done();
 
         return deferred.promise;
     },

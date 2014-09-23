@@ -1,4 +1,4 @@
-var sessionFixtures = require(process.env.PROJECT_PATH + "/test/fixtures/default/Sessions");
+var sessionFixtures = require(process.env.PROJECT_PATH + "/test/fixtures/default/Session");
 
 module.exports = {
     collection: {
@@ -14,10 +14,19 @@ module.exports = {
 
         for(var i = 0; i < sessionFixtures.length; i++) {
             if(sessionsFixtures[i]['user_id'] == userId) {
-                callback(null, sessionsFixtures[i]);
+                callback(null, sessionFixtures[i]);
             }
         }
 
         callback(new Error("Could not find user"));
+    },
+    mockInstantiation: function() {
+        return function(parameters) {
+            return {
+                save: function (callback) {
+                    callback(null, parameters);
+                }
+            }
+        }
     }
 };
