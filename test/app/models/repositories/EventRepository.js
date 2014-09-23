@@ -95,6 +95,7 @@ module.exports = {
                 test.equals(event.name, "Toms Test Event");
                 test.equals(event.created_by, userId);
                 test.done();
-            });
+            })
+            .done();
     }
 };

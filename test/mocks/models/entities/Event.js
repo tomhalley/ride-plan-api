@@ -32,7 +32,7 @@ module.exports = {
         return function(parameters) {
             return {
                 save: function(callback) {
-
+                    callback(null, parameters);
                 }
             }
         };
