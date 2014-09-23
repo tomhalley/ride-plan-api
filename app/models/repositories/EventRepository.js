@@ -9,6 +9,11 @@ var createEventHash = function(eventData) {
 };
 
 module.exports = {
+    /**
+     * Retrieves a list of all events
+     *
+     * @returns {adapter.deferred.promise|*|defer.promise|promise.promise|jQuery.promise|promise}
+     */
     getEvents: function() {
         var deferred = Q.defer();
 
@@ -35,6 +40,12 @@ module.exports = {
 
         return deferred.promise;
     },
+    /**
+     * Retrieves an event by eventId
+     *
+     * @param eventId
+     * @returns {adapter.deferred.promise|*|defer.promise|promise.promise|jQuery.promise|promise}
+     */
     getEventById: function(eventId) {
         var deferred = Q.defer();
 
@@ -57,6 +68,13 @@ module.exports = {
 
         return deferred.promise;
     },
+    /**
+     * Saves an event in the database
+     *
+     * @param eventData
+     * @param userId
+     * @returns {adapter.deferred.promise|*|defer.promise|promise.promise|jQuery.promise|promise}
+     */
     createEvent: function(eventData, userId) {
         var deferred = Q.defer();
 

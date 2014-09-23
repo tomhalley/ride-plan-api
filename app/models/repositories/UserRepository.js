@@ -6,25 +6,33 @@ module.exports = {
     createUser: function(fbId, name, email) {
         var deferred = Q.defer();
 
-        Database.connect()
-            .then(function() {
-                var user = new User({
-                    facebook_id: fbId,
-                    name: name,
-                    email: email
-                });
+        if(fbId == null || fbId == undefined) {
+            deferred.reject(new Error("Parameter 'fbId' was undefined"));
+        } else if (name == null || name == undefined) {
+            deferred.reject(new Error("Parameter 'name' was undefined"));
+        } else if (email == null || email == undefined) {
+            deferred.reject(new Error("Parameter 'email' was undefined"));
+        } else {
+            Database.connect()
+                .then(function() {
+                    var user = new User({
+                        facebook_id: fbId,
+                        name: name,
+                        email: email
+                    });
 
-                user.save(function(err, user) {
-                    Database.close();
+                    user.save(function(err, user) {
+                        Database.close();
 
-                    if(err || user == undefined) {
-                        deferred.reject(new Error(err || "Unable to save user"));
-                    } else {
-                        deferred.resolve(user);
-                    }
-                });
-            })
-            .done();
+                        if(err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(user);
+                        }
+                    });
+                })
+                .done();
+        }
 
         return deferred.promise;
     },

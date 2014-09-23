@@ -1,55 +1,70 @@
-var UserRepository = require("../../../../app/models/repositories/UserRepository"),
-    FixtureService = require("../../../../app/models/services/FixtureService");
+var rewire = require("rewire"),
+    UserRepository = rewire(process.env.PROJECT_PATH + "/app/models/repositories/UserRepository"),
+    DatabaseMock = require(process.env.PROJECT_PATH + "/test/mocks/common/Database");
 
 module.exports = {
     setUp: function(callback) {
-        FixtureService.loadFixtures("default")
-            .then(callback)
-            .done();
+        UserRepository.__set__("Database", DatabaseMock);
+        callback();
     },
-    testFindUserByFacebookId_ReturnsUser: function(test) {
-        UserRepository.findUserByFacebookId(76354369436)
-            .then(function(user) {
-                test.equal(user.name, "Tom Halley");
-            })
-            .done(function() {
-                test.done();
-            });
+    createUser: {
+        testCanCreateUser: function(test) {
+            // Arrange
+
+        },
+        testThrowsExceptionIfFacebookIdIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfNameIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfEmailIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfUserCouldNotBeSaved: function(test) {
+
+        }
     },
-    testFindUserByFacebookId_ReturnsNullIfNoUser: function(test) {
-        UserRepository.findUserByFacebookId(243643653)
-            .then(function(user) {
-                test.equal(user, null);
-            })
-            .done(function() {
-                test.done();
-            });
+    findUserById: {
+        testCanFindUser: function(test) {
+
+        },
+        testReturnsNullIfNoUserCouldBefound: function(test) {
+
+        },
+        testThrowsExceptionIfUserIdIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfCouldNotRetrieveUser: function(test) {
+
+        }
     },
-    testFindUserByEmail_ReturnsUser: function(test) {
-        UserRepository.findUserByEmail("tomhalley89@gmail.com")
-            .then(function(user) {
-                test.equal(user.name, "Tom Halley");
-            })
-            .done(function() {
-                test.done();
-            });
+    findUserByFacebookId: {
+        testCanFindUser: function(test) {
+
+        },
+        testReturnsNullIfNoUserCouldBefound: function(test) {
+
+        },
+        testThrowsExceptionIfFacebookIdIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfCouldNotRetrieveUser: function(test) {
+
+        }
     },
-    testFindUserByEmail_ReturnsNullOfNoUser: function(test) {
-        UserRepository.findUserByEmail(null)
-            .then(function(user) {
-                test.equal(user, null);
-            })
-            .done(function() {
-                test.done();
-            });
-    },
-    testCreateUser_CanCreateUser: function(test) {
-        UserRepository.createUser(123456, "Bob", "bob@gmail.com")
-            .then(function(user) {
-                test.equal(user.name, "Bob");
-            })
-            .done(function() {
-                test.done();
-            });
+    findUserByEmail: {
+        testCanFindUser: function(test) {
+
+        },
+        testReturnsNullIfNoUserCouldBefound: function(test) {
+
+        },
+        testThrowsExceptionIfEmailIsNull: function(test) {
+
+        },
+        testThrowsExceptionIfCouldNotRetrieveUser: function(test) {
+
+        }
     }
 };
