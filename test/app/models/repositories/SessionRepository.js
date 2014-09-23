@@ -1,8 +1,7 @@
 var rewire = require("rewire"),
     SessionRepository = rewire(process.env.PROJECT_PATH + "/app/models/repositories/SessionRepository"),
     SessionMock = require(process.env.PROJECT_PATH + "/test/mocks/models/entities/Session"),
-    DatabaseMock = require(process.env.PROJECT_PATH + "/test/mocks/common/Database"),
-    ObjectId = require("mongoose").Types.ObjectId;
+    DatabaseMock = require(process.env.PROJECT_PATH + "/test/mocks/common/Database");
 
 module.exports = {
     setUp: function(callback) {
@@ -14,24 +13,12 @@ module.exports = {
         testCanCreateSession: function(test){
             // Arrange
             SessionRepository.__set__("Session", SessionMock.mockInstantiation());
-            var userId = new ObjectId("345093842835");
+            var userId = "345093842835";
 
             // Act
             SessionRepository.createSessionFromUserId(userId)
                 .then(function(session) {
                     test.equal(session.user_id, userId);
-                    test.done();
-                })
-                .done();
-        },
-        testThrowsExceptionIfUserIdIsNotObjectId: function(test) {
-            // Arrange
-            var userId = "345093842835";
-
-            // Act
-            SessionRepository.createSessionFromUserId(userId)
-                .fail(function(err) {
-                    test.equal(err.message, "UserId was not of type 'ObjectId'");
                     test.done();
                 })
                 .done();
@@ -48,7 +35,7 @@ module.exports = {
         testThrowsExceptionIfSessionCantBeSaved: function(test) {
             // Arrange
             SessionMock.mockReturnError("Failed saving session");
-            var userId = new ObjectId("345093842835");
+            var userId = "345093842835";
 
             // Act
             SessionRepository.createSessionFromUserId(userId)
@@ -63,46 +50,104 @@ module.exports = {
     findSessionByUserId: {
         testCanFindSession: function(test) {
             // Arrange
+            SessionRepository.__set__("Session", SessionMock);
+            SessionMock.mockReturnError(false);
+            var userId = "230897461fh5";
 
-            // Act
+            //Act
+            SessionRepository.findSessionByUserId(userId)
+                .then(function(session) {
+                    test.equal(session.user_id, userId);
+                    test.done();
+                })
+                .done();
         },
         testReturnsNullIfNoUserFound: function(test) {
             // Arrange
+            SessionRepository.__set__("Session", SessionMock);
+            var userId = "ffffffffffff";
 
             // Act
+            SessionRepository.findSessionByUserId(userId)
+                .then(function(session) {
+                    test.equal(Object.keys(session).length, 0);
+                    test.done();
+                })
+                .done();
         },
         testThrowsExceptionIfNoUserIdSet: function(test) {
-            // Arrange
-
             // Act
+            SessionRepository.findSessionByUserId()
+                .fail(function(error) {
+                    test.equal(error.message, "Parameter 'userId' is undefined");
+                    test.done();
+                })
+                .done();
         },
         testThrowsExceptionIfUserCannotBeRetrieved: function(test) {
             // Arrange
+            SessionMock.mockReturnError("Failed finding session");
+            var userId = "230897461fh5";
 
             // Act
+            SessionRepository.findSessionByUserId(userId)
+                .fail(function(error) {
+                    test.equal(error.message, "Failed finding session");
+                    test.done();
+                })
+                .done();
         }
     },
 
     findSessionByToken: {
         testCanFindSessionByToken: function(test) {
             // Arrange
+            SessionRepository.__set__("Session", SessionMock);
+            SessionMock.mockReturnError(false);
+            var token = "1209837213894";
 
-            // Act
+            //Act
+            SessionRepository.findSessionByToken(token)
+                .then(function(session) {
+                    test.equal(session.token, token);
+                    test.done();
+                })
+                .done();
         },
         testReturnsNullIfNoSessionFound: function(test) {
             // Arrange
+            SessionRepository.__set__("Session", SessionMock);
+            var token = "ffffffffffff";
 
             // Act
+            SessionRepository.findSessionByToken(token)
+                .then(function(session) {
+                    test.equal(Object.keys(session).length, 0);
+                    test.done();
+                })
+                .done();
         },
         testThrowsExceptionIfNoSessionTokenSet: function(test) {
-            // Arrange
-
-            // Act
+            //Act
+            SessionRepository.findSessionByToken()
+                .fail(function(error) {
+                    test.equal(error.message, "Parameter 'token' is undefined");
+                    test.done();
+                })
+                .done();
         },
         testThrowsExceptionIfSessionCannotBeRetrieved: function(test) {
             // Arrange
+            SessionMock.mockReturnError("Failed finding session");
+            var token = "ffffffffffff";
 
-            // Act
+            //Act
+            SessionRepository.findSessionByToken(token)
+                .fail(function(error) {
+                    test.equal(error.message, "Failed finding session");
+                    test.done();
+                })
+                .done();
         }
     }
 };

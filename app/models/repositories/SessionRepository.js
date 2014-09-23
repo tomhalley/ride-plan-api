@@ -22,8 +22,6 @@ module.exports = {
 
         if (userId == null || userId == undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
-        } else if(!(userId instanceof ObjectId)) {
-            deferred.reject(new Error("UserId was not of type 'ObjectId'"));
         } else {
             Database.connect()
                 .then(function () {
@@ -56,19 +54,23 @@ module.exports = {
     findSessionByUserId: function(userId) {
         var deferred = Q.defer();
 
-        Database.connect()
-            .then(function() {
-                Session.findOne({user_id: userId}, function (err, session) {
-                    Database.close();
+        if(userId == null || userId == undefined) {
+            deferred.reject(new Error("Parameter 'userId' is undefined"))
+        } else {
+            Database.connect()
+                .then(function() {
+                    Session.findOne({user_id: userId}, function (err, session) {
+                        Database.close();
 
-                    if(err) {
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(session);
-                    }
-                });
-            })
-            .done();
+                        if(err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(session);
+                        }
+                    });
+                })
+                .done();
+        }
 
         return deferred.promise;
     },
@@ -81,19 +83,23 @@ module.exports = {
     findSessionByToken: function(sessionToken) {
         var deferred = Q.defer();
 
-        Database.connect()
-            .then(function() {
-                Session.findOne({token: sessionToken}, function (err, session) {
-                    Database.close();
+        if(sessionToken == null || sessionToken == undefined) {
+            deferred.reject(new Error("Parameter 'token' is undefined"))
+        } else {
+            Database.connect()
+                .then(function () {
+                    Session.findOne({token: sessionToken}, function (err, session) {
+                        Database.close();
 
-                    if (err) {
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(session);
-                    }
-                });
-            })
-            .done();
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(session);
+                        }
+                    });
+                })
+                .done();
+        }
 
         return deferred.promise;
     }

@@ -9,15 +9,26 @@ module.exports = {
         }
     },
     findOne: function(object, callback) {
-        var userId = object['user_id'];
+        if (returnError) {
+            callback(new Error(returnError));
+        } else {
+            if (object.user_id != undefined) {
+                    for (var i = 0; i < sessionFixtures.sessions.length; i++) {
+                        if (sessionFixtures.sessions[i].user_id == object.user_id) {
+                            callback(null, sessionFixtures.sessions[i]);
+                        }
+                    }
 
-        for(var i = 0; i < sessionFixtures.length; i++) {
-            if(sessionsFixtures[i]['user_id'] == userId) {
-                callback(null, sessionFixtures[i]);
+                    callback(null, {});
+            } else {
+                for (var i = 0; i < sessionFixtures.sessions.length; i++) {
+                    if (sessionFixtures.sessions[i].token == object.token) {
+                        callback(null, sessionFixtures.sessions[i]);
+                    }
+                }
+                callback(null, {});
             }
         }
-
-        callback(new Error("Could not find user"));
     },
     mockReturnError: function(errorMessage) {
         returnError = errorMessage;
