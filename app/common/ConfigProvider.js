@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     getConfig: function() {
         if(process.env.NODE_ENV === null) {
@@ -14,7 +16,7 @@ module.exports = {
         var config = this.getConfig();
 
         var string = 'mongodb://';
-        if(config.db.username != undefined && config.db.password != undefined) {
+        if(config.db.username !== undefined && config.db.password !== undefined) {
             string += config.db.username + ":" + config.db.password + "@";
         }
         string += config.db.host + ":" + config.db.port + "/" + config.db.database;

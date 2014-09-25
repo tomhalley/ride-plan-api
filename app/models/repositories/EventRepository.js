@@ -1,3 +1,5 @@
+"use strict";
+
 var Database = require("../../common/Database"),
     Event = require("../entities/Event"),
     User = require("../entities/User"),
@@ -34,7 +36,7 @@ module.exports = {
                     } else {
                         deferred.resolve(events);
                     }
-                })
+                });
             })
             .done();
 
@@ -49,22 +51,22 @@ module.exports = {
     getEventById: function(eventId) {
         var deferred = Q.defer();
 
-        if(eventId == null || eventId == undefined) {
+        if(eventId === null || eventId === undefined) {
             deferred.reject(new Error("EventId cannot be null"));
-        }
+        } else {
+            Database.connect()
+                .then(function() {
+                    Event.findOne({'_id': eventId}, function(err, event) {
+                        Database.close();
 
-        Database.connect()
-            .then(function() {
-                Event.findOne({'_id': eventId}, function(err, event) {
-                    Database.close();
-
-                    if(err) {
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(event);
-                    }
+                        if(err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(event);
+                        }
+                    });
                 });
-            });
+        }
 
         return deferred.promise;
     },
@@ -78,9 +80,9 @@ module.exports = {
     createEvent: function(eventData, userId) {
         var deferred = Q.defer();
 
-        if(eventData == null || eventData == undefined) {
+        if(eventData === null || eventData === undefined) {
             deferred.reject(new Error("Parameter 'eventData' is undefined"));
-        } else if (userId == null || userId == undefined) {
+        } else if (userId === null || userId === undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
         } else {
             Database.connect()

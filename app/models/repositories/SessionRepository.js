@@ -1,3 +1,5 @@
+"use strict";
+
 var Database = require("../../common/Database"),
     Session = require("../entities/Session"),
     Crypto = require('crypto'),
@@ -6,7 +8,7 @@ var Database = require("../../common/Database"),
 
 var createSessionToken = function(userId) {
     var sha = Crypto.createHash('sha256');
-    var timeStamp = (new Date).getTime();
+    var timeStamp = (new Date()).getTime();
     sha.update(userId + timeStamp);
     return sha.digest('hex');
 };
@@ -20,7 +22,7 @@ module.exports = {
     createSessionFromUserId: function(userId) {
         var deferred = Q.defer();
 
-        if (userId == null || userId == undefined) {
+        if (userId === null || userId === undefined) {
             deferred.reject(new Error("Parameter 'userId' is undefined"));
         } else {
             Database.connect()
@@ -54,8 +56,8 @@ module.exports = {
     findSessionByUserId: function(userId) {
         var deferred = Q.defer();
 
-        if(userId == null || userId == undefined) {
-            deferred.reject(new Error("Parameter 'userId' is undefined"))
+        if(userId === null || userId === undefined) {
+            deferred.reject(new Error("Parameter 'userId' is undefined"));
         } else {
             Database.connect()
                 .then(function() {
@@ -83,8 +85,8 @@ module.exports = {
     findSessionByToken: function(sessionToken) {
         var deferred = Q.defer();
 
-        if(sessionToken == null || sessionToken == undefined) {
-            deferred.reject(new Error("Parameter 'token' is undefined"))
+        if(sessionToken === null || sessionToken === undefined) {
+            deferred.reject(new Error("Parameter 'token' is undefined"));
         } else {
             Database.connect()
                 .then(function () {

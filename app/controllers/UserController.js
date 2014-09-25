@@ -1,3 +1,5 @@
+"use strict";
+
 var UserRepository = require("../models/repositories/UserRepository"),
     FacebookService = require("../models/services/FacebookService");
 
@@ -15,10 +17,10 @@ module.exports = {
     findByEmailAction: function(req, res) {
         UserRepository.findUserByEmail(req.params.email)
             .then(function(user) {
-                if(user == null || user == undefined) {
+                if(user === null || user === undefined) {
                     res.status(400);
                 } else {
-                    res.status(200).json(data);
+                    res.status(200).json(user);
                 }
             })
             .fail(function(err) {

@@ -1,3 +1,5 @@
+"use strict";
+
 var Database = require("../common/Database");
 
 /**

@@ -7,7 +7,7 @@ module.exports = {
         if(returnsError) {
             callback(new Error(returnsError));
         } else {
-            callback(null, object)
+            callback(null, object);
         }
     },
     mockReturnError: function(errorMessage) {
@@ -23,7 +23,7 @@ module.exports = {
                         callback(null, parameters);
                     }
                 }
-            }
-        }
+            };
+        };
     }
 };

@@ -1,3 +1,5 @@
+"use strict";
+
 var mongoose = require('mongoose'),
     ConfigProvider = require("./ConfigProvider"),
     Config = ConfigProvider.getConfig(),

@@ -1,3 +1,5 @@
+"use strict";
+
 var Database = require("../../common/Database"),
     User = require("../entities/User"),
     Q = require("q");
@@ -6,11 +8,11 @@ module.exports = {
     createUser: function(fbId, name, email) {
         var deferred = Q.defer();
 
-        if(fbId == null || fbId == undefined) {
+        if(fbId === null || fbId === undefined) {
             deferred.reject(new Error("Parameter 'fbId' was undefined"));
-        } else if (name == null || name == undefined) {
+        } else if (name === null || name === undefined) {
             deferred.reject(new Error("Parameter 'name' was undefined"));
-        } else if (email == null || email == undefined) {
+        } else if (email === null || email === undefined) {
             deferred.reject(new Error("Parameter 'email' was undefined"));
         } else {
             Database.connect()
@@ -39,7 +41,7 @@ module.exports = {
     findUserById: function(userId) {
         var deferred = Q.defer();
 
-        if(userId == null || userId == undefined) {
+        if(userId === null || userId === undefined) {
             deferred.reject(new Error("Parameter 'userId' was undefined"));
         } else {
             Database.connect()
@@ -52,7 +54,7 @@ module.exports = {
                         } else {
                             deferred.resolve(user);
                         }
-                    })
+                    });
                 })
                 .done();
         }
@@ -62,7 +64,7 @@ module.exports = {
     findUserByFacebookId: function(facebookId) {
         var deferred = Q.defer();
 
-        if(facebookId == null || facebookId == undefined) {
+        if(facebookId === null || facebookId === undefined) {
             deferred.reject(new Error("Parameter 'facebookId' was undefined"));
         } else {
             Database.connect()
@@ -85,7 +87,7 @@ module.exports = {
     findUserByEmail: function(email) {
         var deferred = Q.defer();
 
-        if(email == null || email == undefined) {
+        if(email === null || email === undefined) {
             deferred.reject(new Error("Parameter 'email' was undefined"));
         } else {
             Database.connect().
