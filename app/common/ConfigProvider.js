@@ -1,15 +1,17 @@
 "use strict";
 
+var YAML = require('yamljs');
+
 module.exports = {
     getConfig: function() {
-        if(process.env.NODE_ENV === null) {
+        if(process.env.NODE_ENV == undefined) {
             throw new Error("NODE_ENV not defined");
         }
 
         try {
-            return require("../../config/" + process.env.NODE_ENV + ".js");
-        } catch(exc) {
-            throw new Error("Could not find config for '" + process.env.NODE_ENV + "'");
+            return YAML.load(process.env.PROJECT_PATH + "/config/" + process.env.NODE_ENV + ".yml");
+        } catch(err) {
+            throw new Error("Could not find config for " + process.env.NODE_ENV);
         }
     },
     getConnectionString: function() {
