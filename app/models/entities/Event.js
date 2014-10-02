@@ -12,7 +12,8 @@ var EventSchema = new mongoose.Schema({
     avoid_highways: Boolean,
     is_private: Boolean,
     created_by: mongoose.Schema.ObjectId,
-    comments: Array
+    comments: Array,
+    rsvps: Array
 });
 
 module.exports = mongoose.model('Event', EventSchema);

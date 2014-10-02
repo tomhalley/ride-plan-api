@@ -10,7 +10,7 @@ var createEventHash = function(eventData) {
     return crc.crc32(JSON.stringify(eventData));
 };
 
-module.exports = {
+var self = {
     /**
      * Retrieves a list of all events
      *
@@ -114,8 +114,73 @@ module.exports = {
                 .done();
         }
 
+        return deferred.promise;
+    },
 
+    /**
+     * Updates the RSVPs for an event for a user
+     *
+     *  null: Invited
+     *  -1  : Not Going
+     *  0   : Maybe
+     *  1   : Going
+     *
+     * @param userId
+     * @param eventId
+     * @param rsvpBool
+     */
+    updateUserEventRsvp: function(userId, eventId, rsvpBool) {
+        var deferred = Q.defer();
+
+        if(userId === null || userId === undefined) {
+            deferred.reject(new Error("Parameter 'userId' is undefined"));
+        } else if (eventId === null || eventId === undefined) {
+            deferred.reject(new Error("Parameter 'eventId' is undefined"));
+        } else if (rsvpBool === null || rsvpBool == undefined) {
+            deferred.reject(new Error("Parameter 'rsvpBool' is undefined"));
+        } else {
+            self.getEventById(eventId)
+                .then(function(event) {
+
+                    // Get index in array of RSVP object
+                    var rsvpIndex = null;
+
+                    for(var i = 0; i < event.rsvps.length; i++) {
+                        if(event.rsvps[i].user_id == userId) {
+                            rsvpIndex = i;
+                            break;
+                        }
+                    }
+
+                    // Create RSVP object if one doesn't exist for user
+                    if (rsvpIndex !== null) {
+                        event.rsvps[i].rsvp_bool = rsvpBool;
+                    } else {
+                        event.rsvps.push({
+                            user_id: userId,
+                            rsvp_bool: rsvpBool
+                        });
+                    }
+
+                    // Save event with updated RSVPS
+                    Database.connect()
+                        .then(function() {
+                            event.save(function(err) {
+                                Database.close();
+
+                                if(err) {
+                                    deferred.reject(err);
+                                } else {
+                                    deferred.resolve();
+                                }
+                            });
+                        });
+                })
+                .done();
+        }
 
         return deferred.promise;
     }
 };
+
+module.exports = self;

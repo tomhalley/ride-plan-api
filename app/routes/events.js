@@ -10,4 +10,6 @@ router.put('/create', EventController.createAction);
 
 router.get('/:id', EventController.eventAction);
 
+router.put('/:id/rsvp', EventController.rsvpAction);
+
 module.exports = router;

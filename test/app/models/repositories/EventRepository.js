@@ -166,5 +166,29 @@ module.exports = {
                 })
                 .done();
         }
+    },
+
+    updateUserEventRsvp: {
+        testThrowsExceptionIfUserIdIsNull: function(test) {
+            EventRepository.updateUserEventRsvp(null, 1234, -1)
+                .fail(function(err) {
+                    test.equal(err.message, "Parameter 'userId' is undefined");
+                    test.done();
+                })
+        },
+        testThrowsExceptionIfEventIdIsNull: function(test) {
+            EventRepository.updateUserEventRsvp(35, null, -1)
+                .fail(function(err) {
+                    test.equal(err.message, "Parameter 'eventId' is undefined");
+                    test.done();
+                })
+        },
+        testThrowsExceptionIfRsvpBoolIsNull: function(test) {
+            EventRepository.updateUserEventRsvp(35, 1234)
+                .fail(function(err) {
+                    test.equal(err.message, "Parameter 'rsvpBool' is undefined");
+                    test.done();
+                })
+        }
     }
 };
