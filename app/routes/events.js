@@ -3,9 +3,8 @@ var router = require('express').Router(),
 
 /* GET events listing. */
 router.get('/', EventController.indexAction);
-router.get('/all', EventController.indexAction);
-router.get('/all/:perpage', EventController.indexAction);
-router.get('/all/:perpage/:page', EventController.indexAction);
+router.get('/:perpage', EventController.indexAction);
+router.get('/:perpage/:page', EventController.indexAction);
 router.put('/create', EventController.createAction);
 
 router.get('/:id', EventController.eventAction);
