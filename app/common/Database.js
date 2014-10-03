@@ -1,6 +1,7 @@
 "use strict";
 
 var mongoose = require('mongoose'),
+    Errors = require('./Errors'),
     ConfigProvider = require("./ConfigProvider"),
     Config = ConfigProvider.getConfig(),
     Q = require("q");
@@ -14,9 +15,7 @@ module.exports = {
 
         var db = mongoose.connection;
         db.on('error', function(err) {
-            if (err) {
-                deferred.reject(err);
-            }
+            deferred.reject(new Errors.ServiceUnavailable("Database was unavailable"));
         });
         db.once('open', function() {
             deferred.resolve();

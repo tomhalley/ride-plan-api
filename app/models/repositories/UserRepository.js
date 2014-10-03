@@ -105,8 +105,6 @@ module.exports = {
                 .done();
         }
 
-
-
         return deferred.promise;
     }
 };

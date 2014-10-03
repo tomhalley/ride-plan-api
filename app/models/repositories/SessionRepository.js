@@ -2,6 +2,7 @@
 
 var Database = require("../../common/Database"),
     Session = require("../entities/Session"),
+    Errors = require("../../common/Errors"),
     Crypto = require('crypto'),
     ObjectId = require("mongoose").Types.ObjectId,
     Q = require("q");
@@ -86,7 +87,7 @@ module.exports = {
         var deferred = Q.defer();
 
         if(sessionToken === null || sessionToken === undefined) {
-            deferred.reject(new Error("Parameter 'token' is undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'token' is undefined"));
         } else {
             Database.connect()
                 .then(function () {
@@ -94,7 +95,7 @@ module.exports = {
                         Database.close();
 
                         if (err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.HttpBadRequest("Authorization token was invalid"));
                         } else {
                             deferred.resolve(session);
                         }

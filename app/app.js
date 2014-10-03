@@ -1,11 +1,14 @@
-if(process.env.NODE_ENV == undefined) {
+"use strict";
+
+if(process.env.NODE_ENV === undefined) {
     throw new Error("NODE_ENV was not defined in environment variables");
 }
 
-if(process.env.PROJECT_PATH == undefined) {
+if(process.env.PROJECT_PATH === undefined) {
     throw new Error("PROJECT_PATH was not defined in environment variables");
 }
 
+require("extend-error");
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');

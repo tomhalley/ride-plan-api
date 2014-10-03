@@ -1,6 +1,7 @@
 "use strict";
 
 var Database = require("../../common/Database"),
+    Errors = require("../../common/Errors"),
     Event = require("../entities/Event"),
     User = require("../entities/User"),
     Q = require("q"),
@@ -133,20 +134,19 @@ var self = {
         var deferred = Q.defer();
 
         if(userId === null || userId === undefined) {
-            deferred.reject(new Error("Parameter 'userId' is undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'userId' is undefined"));
         } else if (eventId === null || eventId === undefined) {
-            deferred.reject(new Error("Parameter 'eventId' is undefined"));
-        } else if (rsvpBool === null || rsvpBool == undefined) {
-            deferred.reject(new Error("Parameter 'rsvpBool' is undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'eventId' is undefined"));
+        } else if (rsvpBool === null || rsvpBool === undefined) {
+            deferred.reject(new Errors.AppError("Parameter 'rsvpBool' is undefined"));
         } else {
             self.getEventById(eventId)
                 .then(function(event) {
-
                     // Get index in array of RSVP object
-                    var rsvpIndex = null;
+                    var rsvpIndex = 0;
 
                     for(var i = 0; i < event.rsvps.length; i++) {
-                        if(event.rsvps[i].user_id == userId) {
+                        if(event.rsvps[i].user_id.equals(userId)) {
                             rsvpIndex = i;
                             break;
                         }
@@ -169,14 +169,16 @@ var self = {
                                 Database.close();
 
                                 if(err) {
-                                    deferred.reject(err);
+                                    deferred.reject(new Errors.AppError("Unable to save event"));
                                 } else {
                                     deferred.resolve();
                                 }
                             });
                         });
                 })
-                .done();
+                .fail(function() {
+                    deferred.reject(new Errors.HttpNotFound("Could not find event"));
+                });
         }
 
         return deferred.promise;
