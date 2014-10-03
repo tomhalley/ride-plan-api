@@ -33,7 +33,7 @@ var self = {
                     Database.close();
 
                     if(err) {
-                        deferred.reject(err);
+                        deferred.reject(new Errors.AppError(err.message));
                     } else {
                         deferred.resolve(events);
                     }
@@ -61,7 +61,7 @@ var self = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(event);
                         }

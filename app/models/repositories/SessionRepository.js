@@ -37,7 +37,7 @@ module.exports = {
                         Database.close();
 
                         if (err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(session);
                         }
@@ -66,7 +66,7 @@ module.exports = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(session);
                         }
@@ -95,7 +95,7 @@ module.exports = {
                         Database.close();
 
                         if (err) {
-                            deferred.reject(new Errors.HttpBadRequest("Authorization token was invalid"));
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(session);
                         }

@@ -1,6 +1,7 @@
 "use strict";
 
-var Database = require("../../common/Database"),
+var Errors = require("../../common/Errors"),
+    Database = require("../../common/Database"),
     User = require("../entities/User"),
     Q = require("q");
 
@@ -9,11 +10,11 @@ module.exports = {
         var deferred = Q.defer();
 
         if(fbId === null || fbId === undefined) {
-            deferred.reject(new Error("Parameter 'fbId' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'fbId' was undefined"));
         } else if (name === null || name === undefined) {
-            deferred.reject(new Error("Parameter 'name' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'name' was undefined"));
         } else if (email === null || email === undefined) {
-            deferred.reject(new Error("Parameter 'email' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'email' was undefined"));
         } else {
             Database.connect()
                 .then(function() {
@@ -27,7 +28,7 @@ module.exports = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(user);
                         }
@@ -42,7 +43,7 @@ module.exports = {
         var deferred = Q.defer();
 
         if(userId === null || userId === undefined) {
-            deferred.reject(new Error("Parameter 'userId' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'userId' was undefined"));
         } else {
             Database.connect()
                 .then(function() {
@@ -50,7 +51,7 @@ module.exports = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(user);
                         }
@@ -65,7 +66,7 @@ module.exports = {
         var deferred = Q.defer();
 
         if(facebookId === null || facebookId === undefined) {
-            deferred.reject(new Error("Parameter 'facebookId' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'facebookId' was undefined"));
         } else {
             Database.connect()
                 .then(function() {
@@ -73,7 +74,7 @@ module.exports = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(user);
                         }
@@ -88,7 +89,7 @@ module.exports = {
         var deferred = Q.defer();
 
         if(email === null || email === undefined) {
-            deferred.reject(new Error("Parameter 'email' was undefined"));
+            deferred.reject(new Errors.AppError("Parameter 'email' was undefined"));
         } else {
             Database.connect().
                 then(function() {
@@ -96,7 +97,7 @@ module.exports = {
                         Database.close();
 
                         if(err) {
-                            deferred.reject(err);
+                            deferred.reject(new Errors.AppError(err.message));
                         } else {
                             deferred.resolve(user);
                         }

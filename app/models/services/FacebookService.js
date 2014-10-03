@@ -1,4 +1,7 @@
-var UserRepository = require("../repositories/UserRepository"),
+"use strict";
+
+var Errors = require("../../common/Errors"),
+    UserRepository = require("../repositories/UserRepository"),
     ConfigProvider = require("../../common/ConfigProvider"),
     Config = ConfigProvider.getConfig(),
     SessionService = require("../services/SessionService"),
@@ -9,8 +12,8 @@ var FacebookService = {
     verifyAccessToken: function(accessToken) {
         var deferred = Q.defer();
 
-        if(accessToken == null || accessToken == undefined) {
-            deferred.reject(new Error("Access token parameter was null"));
+        if(accessToken === null || accessToken === undefined) {
+            deferred.reject(new Errors.AppError("Parameter 'accessToken' was not defined"));
         }
 
         //2. Verify User Access Token
@@ -29,20 +32,20 @@ var FacebookService = {
                 result = JSON.parse(result);
 
                 // If data contains error...
-                if(result.error != undefined) {
-                    deferred.reject(new Error(result.error.message));
-                } else if (result.data == undefined) {
-                    deferred.reject(new Error("No Data returned from API"))
+                if(result.error !== undefined) {
+                    deferred.reject(new Errors.HttpUnauthorised(result.error.message));
+                } else if (result.data === undefined) {
+                    deferred.reject(new Errors.AppError("No Data returned from API"));
                 } else {
-                    if (result.data.app_id != Config.facebook.app_id) {
-                        deferred.reject(new Error("What? The API responded with someone elses APP Id"))
-                    } else if (result.data.is_valid != true) {
+                    if (result.data.app_id !== Config.facebook.app_id) {
+                        deferred.reject(new Errors.AppError("What? The API responded with someone elses APP Id"));
+                    } else if (result.data.is_valid !== true) {
                         deferred.reject(new Error("For some reason the response says the AccessToken is not valid :("));
                     } else {
                         deferred.resolve(true);
                     }
                 }
-            })
+            });
         }).on('error', function(e) {
             deferred.reject(e);
         });
@@ -52,8 +55,8 @@ var FacebookService = {
     getUserDetails: function(accessToken) {
         var deferred = Q.defer();
 
-        if(accessToken == null) {
-            deferred.reject(new Error("AccessToken was null"));
+        if(accessToken === null || accessToken === undefined) {
+            deferred.reject(new Errors.AppError("Parameter 'accessToken' was not defined"));
         }
 
         var options = {
@@ -71,7 +74,7 @@ var FacebookService = {
             });
 
             res.on('error', function(err) {
-                deferred.reject(new Error(err));
+                deferred.reject(new Errors.AppError(err.message));
             });
         });
 
@@ -79,25 +82,25 @@ var FacebookService = {
     },
     authenticate: function(accessToken, fbUserId) {
         return FacebookService.verifyAccessToken(accessToken)
-        .then(function() {
-            return UserRepository.findUserByFacebookId(fbUserId);
-        })
-        .then(function (user) {
-            if (user === null) {
-                return FacebookService.getUserDetails(accessToken)
-                .then(function (userData) {
-                    return UserRepository.createUser(userData.id, userData.name, userData.email);
-                })
-            } else {
-                return user;
-            }
-        })
-        .then(function(user) {
-            return SessionService.sessionizeUser(user);
-        })
-        .then(function(session) {
-            return session.token;
-        });
+            .then(function() {
+                return UserRepository.findUserByFacebookId(fbUserId);
+            })
+            .then(function (user) {
+                if (user === null) {
+                    return FacebookService.getUserDetails(accessToken)
+                        .then(function (userData) {
+                            return UserRepository.createUser(userData.id, userData.name, userData.email);
+                        });
+                } else {
+                    return user;
+                }
+            })
+            .then(function(user) {
+                return SessionService.sessionizeUser(user);
+            })
+            .then(function(session) {
+                return session.token;
+            });
     }
 };
 

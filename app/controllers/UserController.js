@@ -1,30 +1,26 @@
 "use strict";
 
-var UserRepository = require("../models/repositories/UserRepository"),
+var Errors = require("../common/Errors"),
+    ErrorHandler = require("../common/ErrorHandler"),
+    UserRepository = require("../models/repositories/UserRepository"),
     FacebookService = require("../models/services/FacebookService");
 
 module.exports = {
     authenticate: function(req, res) {
+        if(req.body.access_token === undefined) {
+            throw new Errors.HttpBadRequest("Access token was missing");
+        }
+
+        if(req.body.user_id === undefined) {
+            throw new Errors.HttpBadRequest("User id was missing");
+        }
+
         FacebookService.authenticate(req.body.access_token, req.body.user_id)
             .then(function(data) {
                 res.status(200).json(data);
             })
-            .catch(function(err) {
-                console.log(err.stack);
-                res.status(500).json(err);
-            });
-    },
-    findByEmailAction: function(req, res) {
-        UserRepository.findUserByEmail(req.params.email)
-            .then(function(user) {
-                if(user === null || user === undefined) {
-                    res.status(400);
-                } else {
-                    res.status(200).json(user);
-                }
-            })
             .fail(function(err) {
-                res.status(500).json(err);
+                ErrorHandler.handleError(res, err);
             });
     }
 };
