@@ -37,7 +37,7 @@ var FacebookService = {
                 } else if (result.data === undefined) {
                     deferred.reject(new Errors.AppError("No Data returned from API"));
                 } else {
-                    if (result.data.app_id !== Config.facebook.app_id) {
+                    if (result.data.app_id != Config.facebook.app_id) {
                         deferred.reject(new Errors.AppError("What? The API responded with someone elses APP Id"));
                     } else if (result.data.is_valid !== true) {
                         deferred.reject(new Error("For some reason the response says the AccessToken is not valid :("));
