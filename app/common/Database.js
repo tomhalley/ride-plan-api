@@ -15,7 +15,9 @@ module.exports = {
 
         var db = mongoose.connection;
         db.on('error', function(err) {
-            deferred.reject(new Errors.ServiceUnavailable("Database was unavailable"));
+            if (err) {
+                deferred.reject(new Errors.ServiceUnavailable("Failed connecting to database"));
+            }
         });
         db.once('open', function() {
             deferred.resolve();

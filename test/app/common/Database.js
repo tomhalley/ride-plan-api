@@ -1,3 +1,5 @@
+"use strict";
+
 var rewire = require("rewire"),
     Database = rewire(process.env.PROJECT_PATH + "/app/common/Database"),
     mongooseMock = require(process.env.PROJECT_PATH + "/test/mocks/mongoose");

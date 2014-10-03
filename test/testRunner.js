@@ -1,5 +1,7 @@
 "use strict";
 
+require("extend-error");
+
 process.env.PROJECT_PATH = __dirname + "/../";
 process.env.NODE_ENV = "test";
 
