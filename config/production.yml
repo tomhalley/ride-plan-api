@@ -2,11 +2,9 @@ server:
   port: 16682
 
 db:
-  database: "app28020598"
+  database: "ride-plan"
   host: "127.0.0.1"
-  port: 10074
-  username: "heroku"
-  password: "CXGd0sWqo0ByXv-NdFl_MK3xzpaXfsnWjhZVbKhlxVTc4WL05mE2PPP4NQ5YAR5ddD5ls2uQY2eQ14ABsAeCAQ"
+  port: 27017
   options:
     replset:
       socketOptions:
