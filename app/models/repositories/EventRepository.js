@@ -143,7 +143,7 @@ var self = {
             self.getEventById(eventId)
                 .then(function(event) {
                     // Get index in array of RSVP object
-                    var rsvpIndex = 0;
+                    var rsvpIndex = null;
 
                     for(var i = 0; i < event.rsvps.length; i++) {
                         if(event.rsvps[i].user_id.equals(userId)) {
@@ -176,7 +176,7 @@ var self = {
                             });
                         });
                 })
-                .fail(function() {
+                .fail(function(err) {
                     deferred.reject(new Errors.HttpNotFound("Could not find event"));
                 });
         }

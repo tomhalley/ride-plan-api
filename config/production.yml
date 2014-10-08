@@ -21,3 +21,6 @@ redis:
 facebook:
   app_id: 1478417649072538
   app_secret: "0a807ddce0315a63f773342004042eeb"
+
+web:
+  domain: "http://http://ec2-54-77-33-132.eu-west-1.compute.amazonaws.com:16682"
