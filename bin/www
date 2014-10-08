@@ -5,6 +5,7 @@ var debug = require('debug')('MotoNet-Api'),
     Database = require("../app/common/Database");
 
 app.set('port', config.server.port);
+console.log("Listeningn on port " + app.get('port'));
 
 // Check status of Database
 Database.connect()
