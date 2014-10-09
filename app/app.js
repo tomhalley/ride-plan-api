@@ -1,11 +1,11 @@
 "use strict";
 
 if(process.env.NODE_ENV === undefined) {
-    throw new Error("NODE_ENV was not defined in environment variables");
+    process.env.NODE_ENV = 'production';
 }
 
 if(process.env.PROJECT_PATH === undefined) {
-    throw new Error("PROJECT_PATH was not defined in environment variables");
+    process.env.PROJECT_PATH = '/api';
 }
 
 require("extend-error");
