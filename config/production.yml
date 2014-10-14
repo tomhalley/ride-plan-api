@@ -15,4 +15,4 @@ facebook:
   app_secret: "0a807ddce0315a63f773342004042eeb"
 
 web:
-  domain: "http://ec2-54-77-33-132.eu-west-1.compute.amazonaws.com"
+  domain: "http://ec2-54-171-73-86.eu-west-1.compute.amazonaws.com"
