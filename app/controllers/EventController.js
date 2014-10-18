@@ -1,10 +1,11 @@
 "use strict";
 
 var EventRepository = require("../models/repositories/EventRepository"),
+    EventService = require("../models/services/EventService"),
+    RsvpService = require("../models/services/RsvpService"),
     ErrorHandler = require("../common/ErrorHandler"),
     Errors = require("../common/Errors"),
     SessionRepository = require("../models/repositories/SessionRepository"),
-    EventService = require("../models/services/EventService"),
     ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
@@ -77,7 +78,7 @@ module.exports = {
                     throw new Errors.HttpBadRequest("Invalid authorization token in header");
                 }
 
-                return EventRepository.updateUserEventRsvp(session.user_id, req.params.id, req.body.rsvpBool);
+                return RsvpService.updateUserEventRsvp(session.user_id, req.params.id, req.body.rsvpBool);
             })
             .then(function() {
                 res.status(200).json();

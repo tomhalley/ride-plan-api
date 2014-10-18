@@ -17,8 +17,8 @@ redis:
   options: null
 
 facebook:
-  app_id: 1478753505705619
-  app_secret: "51df55fc5c7a9a7e555d8ec26e131f72"
+  app_id: 1478417649072538
+  app_secret: "0a807ddce0315a63f773342004042eeb"
 
 web:
   domain: "http://localhost:8000"
