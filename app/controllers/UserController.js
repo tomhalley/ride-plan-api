@@ -8,11 +8,11 @@ var Errors = require("../common/Errors"),
 module.exports = {
     authenticate: function(req, res) {
         if(req.body.access_token === undefined) {
-            throw new Errors.HttpBadRequest("Access token was missing");
+            ErrorHandler.handleError(res, new Errors.HttpBadRequest("Access token was missing"));
         }
 
         if(req.body.user_id === undefined) {
-            throw new Errors.HttpBadRequest("User id was missing");
+            ErrorHandler.handleError(res, new Errors.HttpBadRequest("User id was missing"));
         }
 
         FacebookService.authenticate(req.body.access_token, req.body.user_id)

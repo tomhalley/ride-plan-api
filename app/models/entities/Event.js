@@ -1,11 +1,12 @@
-var mongoose = require("mongoose");
+var mongoose = require("mongoose"),
+    Mixed = mongoose.Schema.Types.Mixed;
 
 var EventSchema = new mongoose.Schema({
     _id: String,
     name: String,
-    origin: String,
+    origin: Mixed,
     waypoints: Array,
-    destination: String,
+    destination: Mixed,
     start_time: Date,
     end_time: Date,
     avoid_tolls: Boolean,

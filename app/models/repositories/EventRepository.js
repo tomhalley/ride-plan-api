@@ -116,7 +116,7 @@ var self = {
         }
 
         return deferred.promise;
-    },
+    }
 };
 
 module.exports = self;
