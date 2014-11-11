@@ -11,13 +11,17 @@ module.exports = {
     connect: function() {
         var deferred = Q.defer();
 
+        if(process.env.NODE_ENV === 'dev') {
+            mongoose.set('debug', true);
+        }
+
         mongoose.connect(ConfigProvider.getConnectionString(), Config.db.options);
 
         var db = mongoose.connection;
         db.on('error', function(err) {
-            if (err) {
-                deferred.reject(new Errors.ServiceUnavailable("Failed connecting to database"));
-            }
+            console.error(err);
+            console.log(ConfigProvider.getConnectionString());
+            deferred.reject(new Errors.ServiceUnavailable("Failed connecting to database"));
         });
         db.once('open', function() {
             deferred.resolve();

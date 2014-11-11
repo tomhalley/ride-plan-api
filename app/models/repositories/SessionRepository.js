@@ -62,15 +62,17 @@ module.exports = {
         } else {
             Database.connect()
                 .then(function() {
-                    Session.findOne({user_id: userId}, function (err, session) {
-                        Database.close();
+                    Session.findOne({user_id: userId})
+                        .select({token: 1})
+                        .exec(function (err, session) {
+                            Database.close();
 
-                        if(err) {
-                            deferred.reject(new Errors.AppError(err.message));
-                        } else {
-                            deferred.resolve(session);
-                        }
-                    });
+                            if(err) {
+                                deferred.reject(new Errors.AppError(err.message));
+                            } else {
+                                deferred.resolve(session);
+                            }
+                        });
                 })
                 .done();
         }
@@ -91,15 +93,17 @@ module.exports = {
         } else {
             Database.connect()
                 .then(function () {
-                    Session.findOne({token: sessionToken}, function (err, session) {
-                        Database.close();
+                    Session.findOne({token: sessionToken})
+                        .select({user_id: 1})
+                        .exec(function (err, session) {
+                            Database.close();
 
-                        if (err) {
-                            deferred.reject(new Errors.AppError(err.message));
-                        } else {
-                            deferred.resolve(session);
-                        }
-                    });
+                            if (err) {
+                                deferred.reject(new Errors.AppError(err.message));
+                            } else {
+                                deferred.resolve(session);
+                            }
+                        });
                 })
                 .done();
         }

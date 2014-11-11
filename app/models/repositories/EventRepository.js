@@ -88,31 +88,23 @@ var self = {
         } else {
             Database.connect()
                 .then(function() {
-                    var event = new Event({
-                        _id: createEventHash(eventData),
-                        name: eventData.name,
-                        origin: eventData.origin,
-                        waypoints: eventData.waypoints,
-                        destination: eventData.destination,
-                        start_time: eventData.start_time,
-                        end_time: eventData.end_time,
-                        avoid_tolls: eventData.avoid_tolls,
-                        avoid_highways: eventData.avoid_highways,
-                        is_private: eventData.is_private,
-                        created_by: userId
-                    });
+                    var eventDataObject = eventData;
+                    eventDataObject._id = createEventHash(eventData);
+                    eventDataObject.created_by = userId;
+
+                    var event = new Event(eventDataObject);
 
                     event.save(function(err, event) {
                         Database.close();
 
+                        console.log(err);
                         if(err) {
                             deferred.reject(err);
                         } else {
                             deferred.resolve(event);
                         }
                     });
-                })
-                .done();
+                });
         }
 
         return deferred.promise;

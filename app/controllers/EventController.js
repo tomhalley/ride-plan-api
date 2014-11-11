@@ -3,6 +3,7 @@
 var EventRepository = require("../models/repositories/EventRepository"),
     EventService = require("../models/services/EventService"),
     RsvpService = require("../models/services/RsvpService"),
+    RsvpRepository = require('../models/repositories/RsvpRepository'),
     ErrorHandler = require("../common/ErrorHandler"),
     Errors = require("../common/Errors"),
     SessionRepository = require("../models/repositories/SessionRepository"),
@@ -23,13 +24,20 @@ module.exports = {
             throw new Errors.HttpBadRequest("EventID was missing from request");
         }
 
+        var event = null;
+
         EventRepository.getEventById(req.params.id)
             .then(function(event) {
                 if(event === null) {
                     throw new Errors.HttpNotFound("Event not found");
                 }
 
-                res.status(200).json(event);
+                RsvpRepository.getRsvpsForEvent(event._id)
+                    .then(function(rsvps) {
+                        event.rsvps = rsvps;
+
+                        res.status(200).json(event);
+                    });
             })
             .fail(function(err) {
                 ErrorHandler.handleError(res, err);
@@ -50,7 +58,7 @@ module.exports = {
                     throw new Errors.HttpBadRequest("Invalid authorization token in header");
                 }
 
-                return EventRepository.createEvent(req.body.data, new ObjectId(session.user_id));
+                return EventRepository.createEvent(req.body.data, session.user_id);
             })
             .then(function(event) {
                 res.status(200).json(event);

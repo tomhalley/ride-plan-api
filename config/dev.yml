@@ -1,3 +1,6 @@
+app:
+  user_id_salt: Paw2zCWN7kYpTvYcPEsDfi6uOUnYBeiDM2OfNVcNmLF24TEisGpab3rRVZpzF7Dc
+
 server:
   port: 3000
 

@@ -3,7 +3,13 @@
 var Errors = require("../../common/Errors"),
     Database = require("../../common/Database"),
     User = require("../entities/User"),
+    Config = require("../../common/ConfigProvider").getConfig(),
+    crc = require('crc'),
     Q = require("q");
+
+var createUserId = function(email) {
+    return crc.crc32(email + Config.app.user_id_salt);
+};
 
 module.exports = {
     createUser: function(fbId, name, email) {
@@ -19,6 +25,7 @@ module.exports = {
             Database.connect()
                 .then(function() {
                     var user = new User({
+                        _id: createUserId(email),
                         facebook_id: fbId,
                         name: name,
                         email: email
@@ -70,17 +77,19 @@ module.exports = {
         } else {
             Database.connect()
                 .then(function() {
-                    User.findOne({"facebook_id": facebookId}, function (err, user) {
-                        Database.close();
+                    User.findOne({"facebook_id": facebookId})
+                        .select({_id: 1, name: 1})
+                        .exec(function (err, user) {
+                            Database.close();
 
-                        if(err) {
-                            deferred.reject(new Errors.AppError(err.message));
-                        } else {
-                            deferred.resolve(user);
-                        }
-                    });
-                })
-                .done();
+                            if(err) {
+                                deferred.reject(new Errors.AppError(err.message));
+                            } else {
+                                deferred.resolve(user);
+                            }
+                        });
+                    })
+                    .done();
         }
 
         return deferred.promise;

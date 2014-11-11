@@ -1,3 +1,6 @@
+app:
+  user_id_salt: FHJ5phdE4lbDkiDiODqHcOig9j8Q8PbB6xTVwXzOiHJviX2GiWviC3Y8xkbNsDOI
+
 server:
   port: 16682
 

@@ -1,3 +1,6 @@
+app:
+  user_id_salt: aoyne4ypwz3I66OH2A3g5wIiyfYVR94ELFL806RbJ7HnhNJRLDN7CjQFF2zABi5J
+
 server:
   port: 80
 
