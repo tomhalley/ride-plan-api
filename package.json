@@ -24,8 +24,9 @@
     "extend-error": "*"
   },
   "devDependencies": {
+    "gulp": "^3.8.10",
+    "jscoverage": "*",
     "nodeunit": "*",
-    "rewire": "*",
-    "jscoverage": "*"
+    "rewire": "*"
   }
 }
