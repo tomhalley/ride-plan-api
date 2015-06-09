@@ -1,7 +1,7 @@
 var rewire = require("rewire"),
-    UserRepository = rewire(process.env.PROJECT_PATH + "/app/models/repositories/UserRepository"),
-    DatabaseMock = require(process.env.PROJECT_PATH + "/test/mocks/common/Database"),
-    UserMock = require(process.env.PROJECT_PATH + "/test/mocks/models/entities/User");
+    UserRepository = rewire("app/models/repositories/UserRepository"),
+    DatabaseMock = require("test/mocks/common/Database"),
+    UserMock = require("test/mocks/models/entities/User");
 
 module.exports = {
     setUp: function(callback) {

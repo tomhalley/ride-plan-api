@@ -1,4 +1,4 @@
-var events = require(process.env.PROJECT_PATH + "/test/fixtures/default/Event");
+var events = require("test/fixtures/default/Event");
 
 var returnError = false;
 

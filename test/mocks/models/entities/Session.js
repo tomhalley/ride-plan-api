@@ -1,4 +1,4 @@
-var sessionFixtures = require(process.env.PROJECT_PATH + "/test/fixtures/default/Session");
+var sessionFixtures = require("test/fixtures/default/Session");
 
 var returnError = false;
 

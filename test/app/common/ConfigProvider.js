@@ -1,8 +1,8 @@
 "use strict";
 
 var rewire = require("rewire"),
-    yamlMock = require(process.env.PROJECT_PATH + "/test/mocks/yaml"),
-    ConfigProvider = rewire(process.env.PROJECT_PATH + "/app/common/ConfigProvider");
+    yamlMock = require("test/mocks/yaml"),
+    ConfigProvider = rewire("app/common/ConfigProvider");
 
 module.exports = {
     setUp: function(callback) {

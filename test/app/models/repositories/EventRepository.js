@@ -1,8 +1,7 @@
 var rewire = require('rewire'),
-    EventRepository = rewire(process.env.PROJECT_PATH + "/app/models/repositories/EventRepository"),
-    DatabaseMock = require(process.env.PROJECT_PATH + "/test/mocks/common/Database"),
-    EventMock = require(process.env.PROJECT_PATH + "/test/mocks/models/entities/Event"),
-    ObjectId = require("mongoose").Types.ObjectId;
+    EventRepository = rewire("app/models/repositories/EventRepository"),
+    DatabaseMock = require("test/mocks/common/Database"),
+    EventMock = require("test/mocks/models/entities/Event");
 
 module.exports = {
     setUp: function(callback) {

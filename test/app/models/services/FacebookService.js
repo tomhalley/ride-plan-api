@@ -1,8 +1,8 @@
 var rewire = require("rewire"),
-    FacebookService = rewire(process.env.PROJECT_PATH + "/app/models/services/FacebookService"),
-    httpsMock = require(process.env.PROJECT_PATH + "/test/mocks/https"),
-    SessionServiceMock = require(process.env.PROJECT_PATH + "/test/mocks/models/services/SessionService"),
-    UserRepositoryMock = require(process.env.PROJECT_PATH + "/test/mocks/models/repositories/UserRepository");
+    FacebookService = rewire("app/models/services/FacebookService"),
+    httpsMock = require("test/mocks/https"),
+    SessionServiceMock = require("test/mocks/models/services/SessionService"),
+    UserRepositoryMock = require("test/mocks/models/repositories/UserRepository");
 
 module.exports = {
     /**

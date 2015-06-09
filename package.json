@@ -14,17 +14,19 @@
     "crc": "~3.0.0",
     "debug": "~2.1.0",
     "express": "~4.10.1",
+    "extend-error": "*",
     "jade": "*",
     "mongodb": "*",
-    "mongoose": "~3.8.18",
+    "mongoose": "^3.8.30",
     "morgan": "~1.5.0",
     "optimist": "*",
     "q": "*",
-    "yamljs": "~0.2.1",
-    "extend-error": "*"
+    "yamljs": "~0.2.1"
   },
   "devDependencies": {
+    "bson": "^0.3.2",
     "gulp": "^3.8.10",
+    "istanbul": "^0.3.15",
     "jscoverage": "*",
     "nodeunit": "*",
     "rewire": "*"

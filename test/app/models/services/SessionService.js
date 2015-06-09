@@ -1,7 +1,7 @@
 var rewire = require("rewire"),
     ObjectId = require("mongoose").Types.ObjectId,
-    SessionService = rewire(process.env.PROJECT_PATH + "/app/models/services/SessionService"),
-    SessionRepositoryMock = require("../../../mocks/models/repositories/SessionRepository");
+    SessionService = rewire("app/models/services/SessionService"),
+    SessionRepositoryMock = require("test/mocks/models/repositories/SessionRepository");
 
 module.exports = {
     testSessionizeUser_CreatesSessionIfOneDoesntExist: function(test) {

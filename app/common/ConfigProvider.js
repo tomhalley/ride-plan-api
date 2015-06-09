@@ -8,8 +8,12 @@ module.exports = {
             throw new Error("NODE_ENV not defined");
         }
 
+        if(process.env.NODE_PATH == undefined) {
+            throw new Error("NODE_PATH not defined");
+        }
+
         try {
-            return YAML.load(process.env.PROJECT_PATH + "/config/" + process.env.NODE_ENV + ".yml");
+            return YAML.load("config/" + process.env.NODE_ENV + ".yml");
         } catch(err) {
             throw new Error("Could not find config for " + process.env.NODE_ENV);
         }

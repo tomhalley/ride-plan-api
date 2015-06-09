@@ -24,8 +24,6 @@ module.exports = {
             throw new Errors.HttpBadRequest("EventID was missing from request");
         }
 
-        var event = null;
-
         EventRepository.getEventById(req.params.id)
             .then(function(event) {
                 if(event === null) {
