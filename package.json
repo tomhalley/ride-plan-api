@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "bson": "^0.3.2",
-    "gulp": "^3.8.10",
+    "gulp": "~3.9.0",
     "istanbul": "^0.3.15",
     "jscoverage": "*",
     "nodeunit": "*",
